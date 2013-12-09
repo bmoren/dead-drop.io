@@ -1,4 +1,4 @@
-imageGiver
+Dead-Drop.io
 =========
 
 A Node.JS image app that gives the image you uploaded to the next user!
@@ -6,7 +6,7 @@ A Node.JS image app that gives the image you uploaded to the next user!
 Tech
 -----------
 
-imageGiver uses a number of open source projects to work properly:
+Dead-Drop.io uses a number of open source projects to work properly:
 
 * [node.js] - evented I/O for the backend
 * [Express] - fast node.js network app framework [@tjholowaychuk]
