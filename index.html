@@ -1,15 +1,36 @@
 <html>
 <head>
-	<title>Send Images n stuff</title>
+	<title>dead-drop.io</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="front.js"></script>
+	<link rel="stylesheet" type="text/css" href="main.css">
+	<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
 </head>
 <body>
 
-	<h3>This is a test</h3>
-	<form action="/share" method="post">
-		<input type="text" name="image">
-		<input type="submit">
-	</form>
+	<div id="container">
 
+		<h1>dead-drop.io</h1>
+
+		<div id="form">
+			<form action="/share" method="post">
+				<input type="text" value="paste link or drag and dead drop" name="image">
+				<input type="submit">
+			</form>
+		</div>
+
+		<a href="#info"><img src="images/info.png" /></a>
+
+		<div id="infoBox">This is a collaborative project of Ben Moren and Derek Anderson. It does this thing when you do that thing.</div>
+	</div>
+
+
+	<div id="background">
+		<svg>
+		    <line x1="0" y1="100%" x2="100%" y2="0"/>
+		    <line x1="0" y1="0" x2="100%" y2="100%"/>
+		</svg>
+	</div>
 
 </body>
 </html>
