@@ -1,0 +1,23 @@
+{
+  "name": "dead-drop.io",
+  "version": "0.0.1",
+  "description": "Secret Sharing Stuff",
+  "main": "app.js",
+  "dependencies": {
+    "ejs": "~0.8.4",
+    "express": "~3.4.4",
+    "mustache": "~0.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bmoren/dead-drop.io.git"
+  },
+  "author": "[\"Ben Moren\", \"Derek Anderson\"]",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "5bcd0fb6e8d4a34ebbe2d50bfb5a1eddfb624951"
+}

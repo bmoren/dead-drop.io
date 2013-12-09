@@ -1,9 +1,12 @@
 var express = require('express'),
-	app = express()
+	app = express(),
+  port = 8999;
 
 app.set('views', __dirname );
 app.engine('html', require('ejs').renderFile);
 app.use(express.bodyParser());
+app.use(express.cookieParser('some secret'));
+app.use(express.static('public'));
 
 var message = "empty";
 
@@ -19,12 +22,10 @@ var handleShare = function(req, res) {
 	res.send( '<img src="' + nextmessage + '"/ >');
 }
 
-app.get('/', function(req, res){
-  res.render('index.html')
-})
+
 
 app.post('/share', handleShare);
 
-app.listen(8999, function(){
-	console.log('App Started!')
+app.listen(port, function(){
+	console.log('App Started! on port', port)
 })
