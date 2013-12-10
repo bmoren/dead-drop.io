@@ -1,7 +1,7 @@
 //Lets get things going
 $(document).ready(function() {
 
-$("#infoBox").hide();
+$(".infoBox").hide();
 
 $("buttonClick").click(function () {
 	$(".showhidebox").fadeIn("slow");
