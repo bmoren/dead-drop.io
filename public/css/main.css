@@ -43,7 +43,7 @@ a:hover{
 .top {
   width: 100%;
   text-align: center;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .overlayWhite{
@@ -125,7 +125,7 @@ a:hover{
 }
 
 .submit{
-	width:100px;
+	width:80px;
 	margin-left: 15px;
 	margin-bottom: -5px
 }
