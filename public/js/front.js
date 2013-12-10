@@ -3,12 +3,12 @@ $(document).ready(function() {
 
 $(".infoBox").hide();
 
-$("buttonClick").click(function () {
-	$(".showhidebox").fadeIn("slow");
+$("#infoButton").click(function () {
+	$(".infoBox").fadeIn("slow");
     });
 
-$(".showhideclose").click(function () {
-	$(".showhidebox").fadeOut("slow");
+$("#infoClose").click(function () {
+	$(".infoBox").fadeOut("slow");
     });
 
 }); // end of document ready
