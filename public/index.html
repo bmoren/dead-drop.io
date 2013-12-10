@@ -9,33 +9,45 @@
 </head>
 <body>
 
-	<div class="top">
-	<h1>thingy thing</h1>
-	</div>
-
-	<div class="cent2">
-		<form action="/share" method="post">
-			<input type="text" value="paste link or drag and dead drop" name="image">
-			<input type="submit">
-		</form>
-	</div>
-
-		
-	<div class="bottom">
-		<a href="#info"><img src="images/info.png" /></a>
-	</div>
-
-	<div id="infoBox">
-	To use dead-drop.io do some stuff. This is a collaborative project of Ben Moren and Derek Anderson. It does this thing when you do that thing.
-	</div>
-
-
-	<div id="background">
+<div id="background">
 		<svg>
 		    <line x1="0" y1="100%" x2="100%" y2="0"/>
 		    <line x1="0" y1="0" x2="100%" y2="100%"/>
 		</svg>
 	</div> 
+
+	<div class="top">
+	current users: 000
+	</div>
+
+	<div class="cent2">
+		<form action="/share" method="post">
+			<input class="textBox drop" onclick="this.value=''" type="text" value="paste link or drag and dead-drop" name="image"><input class="submit drop" type="submit">
+		</form>
+	</div>
+
+		
+	<div class="bottom">
+		<a href="#info"><img src="img/infoButton.png" /></a>
+	</div>
+
+	<div class="infoBox drop">
+	Suported File Formats:
+		GIF, JPG, PNG, BMP,
+		Vimeo, Youtube, Soundcloud, BandCamp,
+		TXT, RTF, CSV
+
+		Filesize Limit: ??
+
+		How to use this:
+		Why:?
+		Who:
+
+
+
+	</div>
+
+
 
 </body>
 </html>
