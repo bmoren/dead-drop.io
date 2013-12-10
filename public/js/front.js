@@ -20,7 +20,16 @@ $(document).ready(function() {
 
   myDropzone.on("success", function(file, resp) {
     console.log( 'uploaded file', resp )
+    //console.log('bmotest: ',resp.message.url)
     // create overlay here...
+
+    //It seems like this gives me the /public/ and I dont need that...... 
+    // it is also having a hard time with filenames with spaces
+    // Dosent seem to be working, it goves the 'nope' / 404 not found error
+
+    var pushImageOut = resp.message.url ;                             //get the URL of the 'old' image
+    pushImageOut = pushImageOut.substring(8, pushImageOut.length);    //remove '/public/'
+    contentOverlay(pushImageOut);                                     //cue overlay with the 'old' image
   })
 
 
@@ -43,11 +52,12 @@ $("#infoClose").click(function () {
 //infoBox stuff
 
 //content overlay stuff
-$("#testing").click(function () {
+function contentOverlay(theThing) {
+  $("#overlayContent").html("<img src=" + "'" + theThing + "'" + "/>");
 	$("#overlayContent").fadeIn("slow").css("z-index, 200");
 	$(".overlayWhite").fadeIn("slow").css("z-index, 100");
 	$("#contentClose").fadeIn("slow").css("z-index, 200");
-	});
+	};
 
 $("#contentClose").click(function () {
 	$("#overlayContent").fadeOut("slow");
