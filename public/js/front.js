@@ -9,7 +9,11 @@ $("buttonClick").click(function () {
 
 $(".showhideclose").click(function () {
 	$(".showhidebox").fadeOut("slow");
-    });
+});
+
+// Dropzone stuff
+var myDropzone = new Dropzone("div#background", { url: "/share"});
+
 
 }); // end of document ready
 
