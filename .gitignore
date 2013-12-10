@@ -1,3 +1,6 @@
 imagegiver.psd
 .DS_Store
 node_modules/**/*
+public/img/uploads/*
+!public/img/uploads/index.html
+!public/img/uploads/1st.jpg
