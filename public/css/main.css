@@ -149,6 +149,12 @@ form{
 	margin:0;
 }
 
+iframe{
+
+	z-index: 9999;
+	border: none;
+}
+
 
 
 #overlayContent img
