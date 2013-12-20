@@ -21,8 +21,8 @@
 	</div>
 
 	<div class="cent2">
-		<form action="/share" method="post">
-			<input class="textBox drop" onclick="this.value=''" type="text" value="paste link or drag and dead-drop" name="image"><input class="submit drop" type="submit" value="drop">
+		<form id="share-form" action="/share" method="post">
+			<input class="textBox drop" onclick="this.value=''" type="text" value="paste link or drag and dead-drop" name="image"><input class="submit drop" type="submit" value="drop" id="submit-btn">
 		</form>
 	</div>
 
@@ -58,7 +58,7 @@
 		</p>
 
 		<div id="infoClose">
-			<a href="#close"><img class="icons" src="img/closeButton.png" /></a>
+			<a href="#"><img class="icons" src="img/closeButton.png" /></a>
 		</div>
 
 	</div>

@@ -17,17 +17,19 @@ app.engine('html', require('ejs').renderFile);
 //
 app.use(function(req, res, next){
   // ATTEMPTING TO DOWNLOAD SOME SHIT!!!
-  if (req.url.indexOf('/img/uploads/') != -1){
-    if (downloads.any( req.url )){
-      downloads.remove( req.url ) // user downloaded this now we can remove it!
+
+  // if (req.url.indexOf('/img/uploads/') != -1){
+    // if (downloads.any( req.url )){
+      // downloads.remove( req.url ) // user downloaded this now we can remove it!
       // actually remove the image
-      var url = path.normalize( __dirname + '/public' + req.url )
-      fs.unlink(url, function() {
-        return next()
-      });
-    }
-    return res.send('NOPE', 404);
-  }
+      // var url = path.normalize( __dirname + '/public' + req.url )
+      // fs.unlink(url, function() {
+      //   return next()
+      // });
+      // return next();
+    // } 
+    // return res.send('NOPE', 404);
+  // }
   next();
 })
 
@@ -58,7 +60,7 @@ var uploadImage = function(file, cb){
   fs.rename(tmp_path, target_path, function(err) {
     if (err) return cb(err)
     fs.unlink(tmp_path, function() {
-      cb(null, img)
+      cb(null, img.replace('/public', '') )
     })
   })
 }
@@ -80,6 +82,7 @@ var addNew = function(type, url){
 // Share endpoint receives url or file uploads and does stuff
 //
 app.post('/share', function(req, res) {
+
 
   // User is trying to upload a url
   if (req.body.image){
