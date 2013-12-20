@@ -2,7 +2,17 @@
 $(document).ready(function() {
 
 
-// Dropzone stuff
+  // Setup SockJS stuff
+  var sock = new SockJS('http://localhost:9999/online');
+  var online_users = $('#active-users');
+
+  sock.onmessage = function(e) {
+    online_users.text( e.data );
+  };
+
+
+
+  // Dropzone stuff
   Dropzone.options.background = {
     maxFilesize: 100,
     parallelUploads: 1,
@@ -56,26 +66,26 @@ $(document).ready(function() {
 
 
 
-//Hides
-$("#infoBox").hide();
- $(".overlayWhite").hide();
- $(".overlayTrans").hide();
- $("#overlayContent").hide();
- $("#contentClose").hide();
+  //Hides
+  $("#infoBox").hide();
+   $(".overlayWhite").hide();
+   $(".overlayTrans").hide();
+   $("#overlayContent").hide();
+   $("#contentClose").hide();
 
-//infoBox stuff
-$("#infoButton").click(function (e) {
-  e.preventDefault();
-	$(".overlayTrans").fadeIn("slow").css("z-index, 100");
-	$("#infoBox").fadeIn("slow").css("z-index, 200");
-});
+  //infoBox stuff
+  $("#infoButton").click(function (e) {
+    e.preventDefault();
+  	$(".overlayTrans").fadeIn("slow").css("z-index, 100");
+  	$("#infoBox").fadeIn("slow").css("z-index, 200");
+  });
 
-$("#infoClose").click(function (e) {
-  e.preventDefault();
-	$("#infoBox").fadeOut("slow");
-	$(".overlayTrans").fadeOut("slow");
-});
-//infoBox stuff
+  $("#infoClose").click(function (e) {
+    e.preventDefault();
+  	$("#infoBox").fadeOut("slow");
+  	$(".overlayTrans").fadeOut("slow");
+  });
+  //infoBox stuff
 
 //content injection stuff
 function imageOverlay(imageURL) {
@@ -111,22 +121,22 @@ function soundcloudOverlay(soundcloudID) {
   };
 
 
-//content overlay stuff
+  //content overlay stuff
 
-function contentOpen(){
-  $("#overlayContent").fadeIn("slow")
-  $(".overlayWhite").fadeIn("slow")
-  $("#contentClose").fadeIn("slow")
+  function contentOpen(){
+    $("#overlayContent").fadeIn("slow")
+    $(".overlayWhite").fadeIn("slow")
+    $("#contentClose").fadeIn("slow")
 
-}
+  }
 
 
-$("#contentClose").click(function (e) {
-  e.preventDefault();
-	$("#overlayContent").fadeOut("slow");
-	$(".overlayWhite").fadeOut("slow");
-	$("#contentClose").fadeOut("slow");
-});
+  $("#contentClose").click(function (e) {
+    e.preventDefault();
+  	$("#overlayContent").fadeOut("slow");
+  	$(".overlayWhite").fadeOut("slow");
+  	$("#contentClose").fadeOut("slow");
+  });
 
 
 
@@ -135,7 +145,3 @@ $("#contentClose").click(function (e) {
 
 
 }); // end of document ready
-
-
-
-

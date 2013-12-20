@@ -1,9 +1,12 @@
 // Load libraries
 var express = require('express'),
   fs = require('fs'),
+  http = require('http'),
+  sockjs = require('sockjs'),
 	app = express(),
   messages = [],
   downloads = [],
+  sockjs_port = 9999,
   port = 8999;
 
 require('sugar') // yum!
@@ -103,8 +106,60 @@ app.post('/share', function(req, res) {
 
 
 
+//
+// Start the webserver
+//
+app.listen(port, function(){
+  console.log('App Started! on port', port )
+})
+
+
+
 
 // -----------------------------------
-app.listen(port, function(){
-	console.log('App Started! on port', port)
+//
+// SockJS - Realtime stuff below, argh!! ;-)
+//
+
+var online_users = 0;
+var clients = {};
+var online = sockjs.createServer();
+
+var broadcast = function(message){
+  for(key in clients) {
+    if(clients.hasOwnProperty(key)) {
+      clients[key].write( message );
+    }
+  }
+}
+
+online.on('connection', function(conn) {
+
+  // someone joined, add them to the party!
+  clients[conn.id] = conn;
+  online_users++;
+
+  // Tell all clients how many online users exist
+  broadcast( online_users );
+
+  // someone left, update all clients
+  conn.on('close', function() {
+    delete clients[conn.id];
+    online_users--;
+    broadcast( online_users );
+  })
+
 })
+
+
+// start the WebSocket server stuff, yo
+
+var server = http.createServer( app );
+
+online.installHandlers(server, {prefix:'/online'});
+
+server.listen(sockjs_port, '0.0.0.0', function(){
+  console.log('SocketJS Started! on port', sockjs_port )
+});
+
+

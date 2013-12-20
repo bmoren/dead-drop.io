@@ -3,6 +3,7 @@
 	<title>dead-drop.io - Temporal Sharing</title>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="js/plugins/dropzone.js"></script>
+	<script src="js/plugins/sockjs-0.3.min.js"></script>
 	<script src="js/front.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
@@ -17,7 +18,7 @@
 	</div> 
 
 	<div class="top">
-		active users: 000
+		active users: <span id="active-users">0</span>
 	</div>
 
 	<div class="cent2">
