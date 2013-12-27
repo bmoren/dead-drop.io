@@ -94,35 +94,42 @@ function imageOverlay(imageURL) {
 
   $("#overlayContent").html("<img src=" + "'" + imageURL + "'" + "/>");
   contentOpen();
-	};
+};
 
+//REmember to turn on all Autoplays. 
 function youtubeOverlay(youtubeID) {
-  $("#overlayContent").attr('class', '').addClass('youtube')
-  $("#overlayContent").html('<div class="position:relative; z-index:9999"><iframe src="http://www.youtube.com/embed/' + youtubeID + '?rel=0" frameborder="0" allowfullscreen></iframe></div>');
+  //iframe has class of center and embedVideo
+  $("#overlayContent").html('<div><iframe src="http://www.youtube.com/embed/' + youtubeID + '?rel=0" frameborder="0" allowfullscreen class="center embedVideo"></iframe></div>');
   contentOpen();
-  };
+};
 
 function vimeoOverlay(vimeoID) {
-  $("#overlayContent").attr('class', '').addClass('vimdeo')
-  $("#overlayContent").html('<iframe src="http://player.vimeo.com/video/' + vimeoID + '?portrait=0&amp;color=ffffff" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>').css("z-index, 9999");
+  //iframe has class of center and embedVideo
+  $("#overlayContent").html('<div><iframe src="http://player.vimeo.com/video/' + vimeoID + '?portrait=0&amp;color=ffffff" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="center embedVideo"></iframe></div>');
   contentOpen();
-  };
+};
 
 function soundcloudOverlay(soundcloudID) {
-  $("#overlayContent").attr('class', '').addClass('soundcloud')
-  $("#overlayContent").html('<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' + soundcloudID + '&amp;color=000&amp;auto_play=true&amp;show_artwork=true"></iframe>');
+  //iframe has class of center and soundcloud
+  $("#overlayContent").html('<div><iframe scrolling="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' + soundcloudID + '&amp;color=666&amp;auto_play=true&amp;show_artwork=true" class="center soundcloud"></iframe></div>');
   contentOpen();
-  };
+};
 
-  function bandcampOverlay(bandcampID) {
-    $("#overlayContent").attr('class', '').addClass('bandcamp')
-  $("#overlayContent").html('<iframe style="border: 0; width: 350px; height: 470px;" src="http://bandcamp.com/EmbeddedPlayer/album=' + bandcampID + '/size=large/bgcol=ffffff/linkcol=333333/notracklist=true/t=1/transparent=true/" seamless>');
+function bandcampOverlay(bandcampID) {
+  //iframe has class of center and bandcamp
+  $("#overlayContent").html('<div><iframe src="http://bandcamp.com/EmbeddedPlayer/album=' + bandcampID + '/size=large/bgcol=ffffff/linkcol=333333/notracklist=true/t=1/transparent=true/" seamless class="center bandcamp"></iframe></div>');
   contentOpen();
-  };
+};
 
+//Testing for layout
+//youtubeOverlay( 'rE6pwmHHVb0' );
+//vimeoOverlay('51510972');
+//soundcloudOverlay('81288173');
+//soundcloudOverlay('114212892');
+//bandcampOverlay('1171202479');
+//bandcampOverlay('456502597');
 
   //content overlay stuff
-
   function contentOpen(){
     $("#overlayContent").fadeIn("slow")
     $(".overlayWhite").fadeIn("slow")
@@ -136,6 +143,7 @@ function soundcloudOverlay(soundcloudID) {
   	$("#overlayContent").fadeOut("slow");
   	$(".overlayWhite").fadeOut("slow");
   	$("#contentClose").fadeOut("slow");
+    $("#overlayContent").html('');            //Remove anything in the overlay content dov so that youtube, etc. wont continue playing on close if ended early.
   });
 
 
