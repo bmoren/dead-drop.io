@@ -123,7 +123,9 @@ app.listen(port, function(){
 
 var online_users = 0;
 var clients = {};
-var online = sockjs.createServer();
+var online = sockjs.createServer({
+  log: function(){}
+});
 
 var broadcast = function(message){
   for(key in clients) {
