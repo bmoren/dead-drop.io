@@ -1,9 +1,10 @@
 //Lets get things going
 $(document).ready(function() {
 
+  var _host = 'http://'+ window.location.hostname;
 
   // Setup SockJS stuff
-  var sock = new SockJS('http://localhost:9999/online');
+  var sock = new SockJS(_host +':9999/online');
   var online_users = $('#active-users');
 
   sock.onmessage = function(e) {
