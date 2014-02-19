@@ -133,6 +133,10 @@ app.post('/share', function(req, res) {
   });
 });
 
+app.get('/test', function(req, res){
+  return res.json({test:'ok'})
+})
+
 
 //
 // Start the webserver

@@ -4,8 +4,8 @@
   "description": "Secret Sharing Stuff",
   "main": "app.js",
   "dependencies": {
-    "ejs": "~0.8.4",
-    "express": "~3.4.4",
+    "ejs": "^0.8.4",
+    "express": "^3.4.4",
     "mustache": "~0.8.0",
     "sugar": "~1.4.1",
     "sockjs": "~0.3.8",
