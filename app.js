@@ -13,7 +13,7 @@ require('sugar') // yum!
 
 // Setup Express Middleware
 app.set('views', __dirname );
-app.engine('html', require('ejs').renderFile);
+app.engine('html', require('ejs').renderFile); 
 
 //
 // Middleware to check for downloaded things

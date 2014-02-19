@@ -43,11 +43,27 @@ $(document).ready(function() {
 
     var message = resp.message;
     if (message.type == 'image') return imageOverlay( message.url );
-    if (message.type == 'url') return imageOverlay( message.url );
-    if (message.type == 'youtube') return youtubeOverlay( 'rE6pwmHHVb0' );
-    if (message.type == 'vimeo') return vimeoOverlay( message.url );
-    // ... etc
+    
+    if (message.type == 'url') {
 
+      if ( message.url.indexOf('vimeo.com/') != -1){
+        return vimeoOverlay( message.url )
+      }
+
+      else if ( message.url.indexOf('youtube.com/') != -1){
+        return youtubeOverlay( message.url )
+      }
+
+      else if ( message.url.indexOf('soundcloud.com/') != -1){
+        return soundcloudOverlay( message.url )
+      }
+
+      else if ( message.url.indexOf('bandcamp.com/') != -1){
+        return bandcampOverlay( message.url )
+      }
+      
+      imageOverlay( message.url )
+    }
   }
 
   // Handle uploading "Files"
