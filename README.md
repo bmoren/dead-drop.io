@@ -18,6 +18,8 @@ Install / Run the app
 Todo
 ------
 
+* Add support for txt, md, csv
+* Support for soundcloud, bandcamp, youtube links
 * Data persistence, for if/when the server crashes
 * Stress-test the application (using `ab` or something)
 * ~~Properly Remove temporary uploaded data after it's been viewed~~
