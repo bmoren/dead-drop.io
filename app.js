@@ -12,7 +12,7 @@ var express = require('express'),
 require('sugar') // yum!
 
 // Setup Express Middleware
-app.set('views', __dirname );
+app.set('views', __dirname +'/public/views' );
 app.engine('html', require('ejs').renderFile); 
 
 //
@@ -104,6 +104,9 @@ app.post('/share', function(req, res) {
   });
 });
 
+app.get('/donation/thank-you', function(req, res){
+  return res.render('thank-you.html')
+})
 
 
 //

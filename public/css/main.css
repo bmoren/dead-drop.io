@@ -113,6 +113,12 @@ a:hover{
 }
 
 
+#minfo.hide, #dinfo.hide { display:none; }
+
+#dinfo {
+	text-align:center;
+}
+
 .inputBoxSize{
 	height:40px;
 	width:490px;

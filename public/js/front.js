@@ -3,6 +3,12 @@ $(document).ready(function() {
 
   var _host = 'http://'+ window.location.hostname;
 
+  // donation stuff
+  $('#js-donate-btn').click(function(e){
+    e.preventDefault();
+    $('#minfo, #dinfo').toggleClass('hide')
+  })
+
   // Setup SockJS stuff
   var sock = new SockJS(_host +':9999/online');
   var online_users = $('#active-users');
@@ -101,6 +107,9 @@ $(document).ready(function() {
     e.preventDefault();
   	$("#infoBox").fadeOut("slow");
   	$(".overlayTrans").fadeOut("slow");
+    // hide the donation view
+    $('#dinfo').addClass('hide')
+    $('#minfo').removeClass('hide')
   });
   //infoBox stuff
 
