@@ -1,40 +1,70 @@
 // Load libraries
 var express = require('express'),
   fs = require('fs'),
+  exec = require('child_process').exec,
   http = require('http'),
+  path = require('path'),
   sockjs = require('sockjs'),
+  async = require('async'),
 	app = express(),
   messages = [],
-  downloads = [],
+  garbage = [],
   sockjs_port = 9999,
   port = 8999;
 
 require('sugar') // yum!
+
+// rebuild uploads directory
+exec('./rebuild.sh')
+
+// faux-guid generation, bwahaha
+var s4 = function() {
+  return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
+}
+var guid = function(){
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
+}
 
 // Setup Express Middleware
 app.set('views', __dirname +'/public/views' );
 app.engine('html', require('ejs').renderFile); 
 
 //
-// Middleware to check for downloaded things
+// Middleware to clean out the img/uploads garbage
 //
-app.use(function(req, res, next){
-  // ATTEMPTING TO DOWNLOAD SOME SHIT!!!
+app.use(function removeGarbage(req, res, next){
+  if (req.url.indexOf('/img/uploads/') != -1 && garbage.length){
+    var fns = []
+    garbage.each(function(item, i){
+      fns.push(function(done){
+        // console.log('- del', item)
+        garbage.remove(item)
+        fs.unlink(item, done)
+      })
+    })
+    async.parallel(fns, function(err, x){
+      if (err) console.log(err)
+      next()
+    })
+  } else {
+    next()
+  }
+})
 
-  // if (req.url.indexOf('/img/uploads/') != -1){
-    // if (downloads.any( req.url )){
-      // downloads.remove( req.url ) // user downloaded this now we can remove it!
-      // actually remove the image
-      // var url = path.normalize( __dirname + '/public' + req.url )
-      // fs.unlink(url, function() {
-      //   return next()
-      // });
-      // return next();
-    // } 
-    // return res.send('NOPE', 404);
-  // }
+//
+// Middleware to serve files and then add them to the garbage collection
+//
+app.use(function serveFile(req, res, next){
+  if (req.url.indexOf('/img/uploads/') != -1){
+    var url = path.normalize( __dirname + '/public' + req.url )
+    // console.log('+ add', url, 'to garbage collection')
+    garbage.push(url)
+  }
   next();
 })
+
+
+
 
 app.use(express.bodyParser());
 app.use(express.cookieParser('some secret'));
@@ -49,7 +79,6 @@ var Message = function(type, url){
 
 // Initialize our messages and download lists
 messages.push( new Message('image', '/img/uploads/1st.jpg') )
-downloads.push( messages[0].url )
 
 //
 // Upload Images method
@@ -58,7 +87,9 @@ downloads.push( messages[0].url )
 // 
 var uploadImage = function(file, cb){
   var tmp_path = file.path;
-  var img = '/public/img/uploads/' + file.name;
+  var ext = path.extname( file.name )
+
+  var img = '/public/img/uploads/' + guid() + ext;
   var target_path = __dirname + img;
   fs.rename(tmp_path, target_path, function(err) {
     if (err) return cb(err)
@@ -76,7 +107,6 @@ var addNew = function(type, url){
   var message = new Message(type, url)      // create a new url 'message'
   var response = messages.pop()             // grab the last 'message'
   messages.push(message)                    // add the new 'message'
-  downloads.push( message.url )             // add to list of available downloads
   return response                           // return the previously added 'message'
 }
 
@@ -85,7 +115,6 @@ var addNew = function(type, url){
 // Share endpoint receives url or file uploads and does stuff
 //
 app.post('/share', function(req, res) {
-
 
   // User is trying to upload a url
   if (req.body.image){
@@ -103,10 +132,6 @@ app.post('/share', function(req, res) {
     return res.json( { message: addNew('image', url) } );
   });
 });
-
-app.get('/donation/thank-you', function(req, res){
-  return res.render('thank-you.html')
-})
 
 
 //

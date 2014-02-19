@@ -1,6 +1,6 @@
 {
   "name": "dead-drop.io",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Secret Sharing Stuff",
   "main": "app.js",
   "dependencies": {
@@ -8,7 +8,8 @@
     "express": "~3.4.4",
     "mustache": "~0.8.0",
     "sugar": "~1.4.1",
-    "sockjs": "~0.3.8"
+    "sockjs": "~0.3.8",
+    "async": "~0.2.10"
   },
   "devDependencies": {},
   "scripts": {
