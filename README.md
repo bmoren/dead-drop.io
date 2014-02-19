@@ -18,12 +18,11 @@ Install / Run the app
 Todo
 ------
 
-* Data persistence, for if/when the server crashes  
-* Properly Remove temporary uploaded data after it's been viewed
-* Create deploy script / stuff
+* Data persistence, for if/when the server crashes
 * Stress-test the application (using `ab` or something)
-* Show a message with info when visiting the site for the very first time. (use localStorage)
-* Setup the "donate" button stuff (donate with btc/ltc)
+* ~~Properly Remove temporary uploaded data after it's been viewed~~
+* ~~Create deploy script / stuff~~
+* ~~Setup the "donate" button stuff (donate with btc)~~
 
 
 Contributors
