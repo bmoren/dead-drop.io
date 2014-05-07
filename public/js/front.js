@@ -30,12 +30,11 @@ $(document).ready(function() {
     createImageThumbnails: false,
     acceptedFiles: 'image/*,text/plain,text/csv,text/x-markdown',
     accept: function(file, done) {
+      console.log('hi?');
       // console.log( file )
       done()
     }
   }
-  var myDropzone = new Dropzone("div#background", { url: "/share"});
-
 
 
   var handleResponse = function(file, resp){
@@ -60,6 +59,10 @@ $(document).ready(function() {
         return youtubeOverlay( message.url )
       }
 
+      else if ( message.url.indexOf('youtu.be/') != -1){
+        return youtubeOverlay( message.url )
+      }
+
       else if ( message.url.indexOf('soundcloud.com/') != -1){
         return soundcloudOverlay( message.url )
       }
@@ -73,8 +76,10 @@ $(document).ready(function() {
   }
 
   // Handle uploading "Files"
-  myDropzone.on("success", handleResponse)
-
+  $("div#background, input.drop").dropzone({
+    url: "/share", 
+    success: handleResponse
+  });
 
   //
   // Handle uploading "links"
@@ -152,7 +157,7 @@ function bandcampOverlay(bandcampID) {
 
 
 //Testing for layout
-youtubeOverlay( 'rE6pwmHHVb0', '39s' );
+// youtubeOverlay( 'rE6pwmHHVb0', '39s' );
 //vimeoOverlay('51510972');
 //soundcloudOverlay('81288173');
 //soundcloudOverlay('114212892');
