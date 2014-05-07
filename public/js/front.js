@@ -20,7 +20,7 @@ $(document).ready(function() {
 
 
   // Dropzone stuff
-  Dropzone.options.background = {
+  Dropzone.options.dropzone = {
     maxFilesize: 100,
     parallelUploads: 1,
     uploadMultiple: false,
@@ -30,7 +30,6 @@ $(document).ready(function() {
     createImageThumbnails: false,
     acceptedFiles: 'image/*,text/plain,text/csv,text/x-markdown',
     accept: function(file, done) {
-      console.log('hi?');
       // console.log( file )
       done()
     }
@@ -76,7 +75,7 @@ $(document).ready(function() {
   }
 
   // Handle uploading "Files"
-  $("div#background, input.drop").dropzone({
+  $("#dropzone").dropzone({
     url: "/share", 
     success: handleResponse
   });
@@ -179,13 +178,36 @@ function bandcampOverlay(bandcampID) {
   	$(".overlayWhite").fadeOut("slow");
   	$("#contentClose").fadeOut("slow");
     $("#overlayContent").html('');            //Remove anything in the overlay content dov so that youtube, etc. wont continue playing on close if ended early.
-    
+
     $('#drop_input').val('paste link or drag and dead-drop')
+    $('#dropzone').removeClass('active')
 
   });
 
 
 
+
+  $('#background')
+  .on('dragenter', function(e){
+    $("#dropzone").addClass('active')
+  })
+  .on('dragleave', function(e){
+    return false; // fix for event
+  })
+
+  $('#dropzone').on('drop', function(e){
+    $('#dropzone').removeClass('active')
+  })
+
+  $('body')
+  .on('dragleave', function(e){
+    $("#dropzone").removeClass('active')
+  })
+
+  // col.addEventListener('dragstart', handleDragStart, false);
+  // col.addEventListener('dragenter', handleDragEnter, false);
+  // col.addEventListener('dragover', handleDragOver, false);
+  // col.addEventListener('dragleave', handleDragLeave, false);
 
 
 
