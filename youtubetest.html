@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Youtube Test</title>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script>
+
+		$( document ).ready(function() {
+
+			$('input[type=submit]').click(function () {
+			    function generate() {
+			        var input = $('#videoUrl').val();
+			        return input.replace(/(?:http:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g, '<iframe width="420" height="345" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>');
+			    }
+
+		    	$('#video').html(generate());
+			});
+
+		});
+
+
+	</script>
+
+</head>
+<body>
+
+<h2>Embed Video Code Retriever</h2>
+<p id="error"></p>
+<form action="." method="post" class="fetchEmbedCode">
+    <h1>Video</h1>
+            <label for="videoUrl">Video page url</label>
+            <input id="videoUrl" type="text" value="http://" />
+            <input type="submit" value="Generate embed code" />
+    
+    <div id="video"></div>
+</form>
+
+
+</body>
+</html>
+
+

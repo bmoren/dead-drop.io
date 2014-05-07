@@ -123,15 +123,15 @@ function imageOverlay(imageURL) {
 };
 
 //REmember to turn on all Autoplays. 
-function youtubeOverlay(youtubeID) {
+function youtubeOverlay(youtubeID, time) {
   //iframe has class of center and embedVideo
-  $("#overlayContent").html('<div><iframe src="http://www.youtube.com/embed/' + youtubeID + '?rel=0" frameborder="0" allowfullscreen class="center embedVideo"></iframe></div>');
+  $("#overlayContent").html('<div><iframe src="http://www.youtube.com/embed/' + youtubeID + '?rel=0&autoplay=1&t=' + time +'" frameborder="0" allowfullscreen class="center embedVideo"></iframe></div>');
   contentOpen();
 };
 
 function vimeoOverlay(vimeoID) {
   //iframe has class of center and embedVideo
-  $("#overlayContent").html('<div><iframe src="http://player.vimeo.com/video/' + vimeoID + '?portrait=0&amp;color=ffffff" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="center embedVideo"></iframe></div>');
+  $("#overlayContent").html('<div><iframe src="http://player.vimeo.com/video/' + vimeoID + '?portrait=0&amp;color=ffffff&amp;autoplay=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="center embedVideo"></iframe></div>');
   contentOpen();
 };
 
@@ -141,14 +141,18 @@ function soundcloudOverlay(soundcloudID) {
   contentOpen();
 };
 
+
+//bandcamp does not support autoplay out of the box, also consider switiching player style.
 function bandcampOverlay(bandcampID) {
   //iframe has class of center and bandcamp
   $("#overlayContent").html('<div><iframe src="http://bandcamp.com/EmbeddedPlayer/album=' + bandcampID + '/size=large/bgcol=ffffff/linkcol=333333/notracklist=true/t=1/transparent=true/" seamless class="center bandcamp"></iframe></div>');
   contentOpen();
 };
 
+
+
 //Testing for layout
-//youtubeOverlay( 'rE6pwmHHVb0' );
+youtubeOverlay( 'rE6pwmHHVb0', '39s' );
 //vimeoOverlay('51510972');
 //soundcloudOverlay('81288173');
 //soundcloudOverlay('114212892');
