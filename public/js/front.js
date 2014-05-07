@@ -179,6 +179,9 @@ function bandcampOverlay(bandcampID) {
   	$(".overlayWhite").fadeOut("slow");
   	$("#contentClose").fadeOut("slow");
     $("#overlayContent").html('');            //Remove anything in the overlay content dov so that youtube, etc. wont continue playing on close if ended early.
+    
+    $('#drop_input').val('paste link or drag and dead-drop')
+
   });
 
 
