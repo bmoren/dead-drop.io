@@ -200,8 +200,8 @@ iframe{
 }
 
 /*~`~`~`~`~`~`~`~`Image size handling stuff~`~`~`~`~`~`~`~`~`~`*/
-#overlayContent img
-{
+
+#overlayContent img{
 	position: absolute;
 	max-width: 80%;
 	top: 10%;

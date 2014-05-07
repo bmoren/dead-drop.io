@@ -91,8 +91,6 @@ $(document).ready(function() {
     })
   })
 
-
-
   //Hides
   $("#infoBox").hide();
    $(".overlayWhite").hide();
@@ -115,74 +113,120 @@ $(document).ready(function() {
     $('#dinfo').addClass('hide')
     $('#minfo').removeClass('hide')
   });
-  //infoBox stuff
-
-//content injection stuff
-function imageOverlay(imageURL) {
-  imageUrl = 'http://upload.wikimedia.org/wikipedia/en/4/4e/Shibe_Inu_Doge_meme.jpg';
-  $("#overlayContent").attr('class', '').addClass('image')
-
-  $("#overlayContent").html("<img src=" + "'" + imageURL + "'" + "/>");
-  contentOpen();
-};
-
-//REmember to turn on all Autoplays. 
-function youtubeOverlay(youtubeID, time) {
-  //iframe has class of center and embedVideo
-  $("#overlayContent").html('<div><iframe src="http://www.youtube.com/embed/' + youtubeID + '?rel=0&autoplay=1&t=' + time +'" frameborder="0" allowfullscreen class="center embedVideo"></iframe></div>');
-  contentOpen();
-};
-
-function vimeoOverlay(vimeoID) {
-  //iframe has class of center and embedVideo
-  $("#overlayContent").html('<div><iframe src="http://player.vimeo.com/video/' + vimeoID + '?portrait=0&amp;color=ffffff&amp;autoplay=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="center embedVideo"></iframe></div>');
-  contentOpen();
-};
-
-function soundcloudOverlay(soundcloudID) {
-  //iframe has class of center and soundcloud
-  $("#overlayContent").html('<div><iframe scrolling="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' + soundcloudID + '&amp;color=666&amp;auto_play=true&amp;show_artwork=true" class="center soundcloud"></iframe></div>');
-  contentOpen();
-};
-
-
-//bandcamp does not support autoplay out of the box, also consider switiching player style.
-function bandcampOverlay(bandcampID) {
-  //iframe has class of center and bandcamp
-  $("#overlayContent").html('<div><iframe src="http://bandcamp.com/EmbeddedPlayer/album=' + bandcampID + '/size=large/bgcol=ffffff/linkcol=333333/notracklist=true/t=1/transparent=true/" seamless class="center bandcamp"></iframe></div>');
-  contentOpen();
-};
 
 
 
-//Testing for layout
-// youtubeOverlay( 'rE6pwmHHVb0', '39s' );
-//vimeoOverlay('51510972');
-//soundcloudOverlay('81288173');
-//soundcloudOverlay('114212892');
-//bandcampOverlay('1171202479');
-//bandcampOverlay('456502597');
+  ////URL Parsers for Media ///
 
-  //content overlay stuff
-  function contentOpen(){
-    $("#overlayContent").fadeIn("slow")
-    $(".overlayWhite").fadeIn("slow")
-    $("#contentClose").fadeIn("slow")
+  function youtube_parser(url){
+      var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+      var match = url.match(regExp);
+      if (match&&match[7].length==11){
+          return match[7];
+      }else{
+          return false;
+      }
+  }
 
+  function vimeo_parser(url){
+    var regExp = /http:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
+    var match = url.match(regExp);
+    if (match){
+        return match[2]
+    }else{
+        return false;
+    }
+  }
+
+  SC.initialize({
+    client_id: 'e815582cffbab7cc96424fedf41a1c6d'
+  });
+
+  function soundcloud_parse(url, cb){
+    SC.oEmbed(url, { auto_play: true, maxheight: 166, iframe: true, }, function(oEmbed) {
+      //console.log('oEmbed response: ' + oEmbed);
+      cb(oEmbed)
+    });
   }
 
 
-  $("#contentClose").click(function (e) {
-    e.preventDefault();
-  	$("#overlayContent").fadeOut("slow");
-  	$(".overlayWhite").fadeOut("slow");
-  	$("#contentClose").fadeOut("slow");
-    $("#overlayContent").html('');            //Remove anything in the overlay content dov so that youtube, etc. wont continue playing on close if ended early.
+  ///////Embed generation functions & content injection stuff
+  function imageOverlay(imageURL) {
+    imageUrl = 'http://upload.wikimedia.org/wikipedia/en/4/4e/Shibe_Inu_Doge_meme.jpg';
+    $("#overlayContent").attr('class', '').addClass('image')
 
-    $('#drop_input').val('paste link or drag and dead-drop')
-    $('#dropzone').removeClass('active')
+    $("#overlayContent").html("<img src=" + "'" + imageURL + "'" + "/>");
+    contentOpen();
+  };
 
-  });
+  //REmember to turn on all Autoplays. 
+  function youtubeOverlay(youtubeURL) {
+
+    var youtubeID = youtube_parser(youtubeURL);
+
+    if (youtubeID == false) {
+      alert("youtube id is no good buddy!");
+    };
+
+    //iframe has class of center and embedVideo
+    $("#overlayContent").html('<div><iframe src="http://www.youtube.com/embed/' + youtubeID + '?rel=0&autoplay=1" frameborder="0" allowfullscreen class="center embedVideo"></iframe></div>');
+    contentOpen();
+  };
+
+  function vimeoOverlay(vimeoURL) {
+
+    var vimeoID = vimeo_parser(vimeoURL);
+
+    //iframe has class of center and embedVideo
+    $("#overlayContent").html('<div><iframe src="http://player.vimeo.com/video/' + vimeoID + '?portrait=0&amp;color=ffffff&amp;autoplay=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="center embedVideo"></iframe></div>');
+    contentOpen();
+  };
+
+  function soundcloudOverlay(soundcloudURL) {
+    soundcloud_parse(soundcloudURL, function(oEmbed) {
+      console.log(oEmbed);
+      //iframe has class of center and soundcloud
+      $("#overlayContent").html('<div class="soundcloud center">' + oEmbed.html + '</div>');
+      contentOpen();
+
+    })
+  };
+
+//BANDCAMP ON HOLD UNTIL DEVELOPER KEYS BECOME AVAILABLE!
+  // //bandcamp does not support autoplay out of the box, also consider switiching player style.
+  // function bandcampOverlay(bandcampID) {
+  //   //iframe has class of center and bandcamp
+  //   $("#overlayContent").html('<div><iframe src="http://bandcamp.com/EmbeddedPlayer/album=' + bandcampID + '/size=large/bgcol=ffffff/linkcol=333333/notracklist=true/t=1/transparent=true/" seamless class="center bandcamp"></iframe></div>');
+  //   contentOpen();
+  // };
+
+
+  //Testing for layout
+  //youtubeOverlay( 'rE6pwmHHVb0');
+  //vimeoOverlay('51510972');
+  //soundcloudOverlay('81288173');
+  //soundcloudOverlay('114212892');
+  //bandcampOverlay('1171202479');
+  //bandcampOverlay('456502597');
+
+    //content overlay stuff
+    function contentOpen(){
+      $("#overlayContent").fadeIn("slow");
+      $(".overlayWhite").fadeIn("slow");
+      $("#contentClose").fadeIn("slow");
+
+    }
+
+
+    $("#contentClose").click(function (e) {
+      e.preventDefault();
+    	$("#overlayContent").fadeOut("slow");
+    	$(".overlayWhite").fadeOut("slow");
+    	$("#contentClose").fadeOut("slow");
+      $("#overlayContent").html('');            //Remove anything in the overlay content dov so that youtube, etc. wont continue playing on close if ended early.
+      $('#drop_input').val('paste link or drag and dead-drop')
+      $('#dropzone').removeClass('active')
+    });
 
 
 
