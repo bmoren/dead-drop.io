@@ -92,10 +92,10 @@ a:hover{
 	opacity:0.0;
 	pointer-events:none;
 	display:block;
-	-moz-transition:opacity 0.1s linear;
-	-o-transition:opacity 0.1s linear;
-	-webkit-transition:opacity 0.1s linear;
-	transition:opacity 0.1s linear;
+	-moz-transition:opacity 0.08s linear;
+	-o-transition:opacity 0.08s linear;
+	-webkit-transition:opacity 0.08s linear;
+	transition:opacity 0.08s linear;
 }
 #dropzone.active {
 	pointer-events:auto;
