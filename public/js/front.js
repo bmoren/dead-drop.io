@@ -72,7 +72,7 @@ $(document).ready(function() {
       else if ( message.url.indexOf('bandcamp.com/') != -1){
         return bandcampOverlay( message.url )
       }
-      
+      message.url = addHttp( message.url );
       imageOverlay( message.url )
     }
   }
@@ -158,12 +158,16 @@ $(document).ready(function() {
     });
   }
 
+  function addHttp(url) {
+    if (!/^(f|ht)tps?:\/\//i.test(url)) {
+      url = "http://" + url;
+    }
+    return url;
+  }
 
   ///////Embed generation functions & content injection stuff
   function imageOverlay(imageURL) {
-    imageUrl = 'http://upload.wikimedia.org/wikipedia/en/4/4e/Shibe_Inu_Doge_meme.jpg';
     $("#overlayContent").attr('class', '').addClass('image')
-
     $("#overlayContent").html("<img src=" + "'" + imageURL + "'" + "/>");
     contentOpen();
   };
