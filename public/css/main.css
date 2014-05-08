@@ -89,11 +89,17 @@ a:hover{
 	bottom:0;
 	right:0;
 	background-color:#000;
-	opacity:0.5;
-	display:none;
+	opacity:0.0;
+	pointer-events:none;
+	display:block;
+	-moz-transition:opacity 0.1s linear;
+	-o-transition:opacity 0.1s linear;
+	-webkit-transition:opacity 0.1s linear;
+	transition:opacity 0.1s linear;
 }
 #dropzone.active {
-	display:block;
+	pointer-events:auto;
+	opacity:0.5;
 }
 
 #contentClose{

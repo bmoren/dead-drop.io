@@ -1,3 +1,6 @@
+var DEFAULT_INPUT_VAL = 'paste link or drag and dead-drop';
+
+
 //Lets get things going
 $(document).ready(function() {
 
@@ -86,7 +89,13 @@ $(document).ready(function() {
   $('#share-form').submit(function(e){
     e.preventDefault();
     var url = $(this).attr('action')
-    $.post(url, $(this).serializeArray(), function(resp){
+    var data = $(this).serializeArray()
+    
+    if (data[0].value == DEFAULT_INPUT_VAL){
+      return false;
+    }
+
+    $.post(url, data, function(resp){
       handleResponse(null, resp);
     })
   })
@@ -192,7 +201,7 @@ $(document).ready(function() {
     })
   };
 
-//BANDCAMP ON HOLD UNTIL DEVELOPER KEYS BECOME AVAILABLE!
+  //BANDCAMP ON HOLD UNTIL DEVELOPER KEYS BECOME AVAILABLE!
   // //bandcamp does not support autoplay out of the box, also consider switiching player style.
   // function bandcampOverlay(bandcampID) {
   //   //iframe has class of center and bandcamp
@@ -209,26 +218,24 @@ $(document).ready(function() {
   //bandcampOverlay('1171202479');
   //bandcampOverlay('456502597');
 
-    //content overlay stuff
-    function contentOpen(){
-      $("#overlayContent").fadeIn("slow");
-      $(".overlayWhite").fadeIn("slow");
-      $("#contentClose").fadeIn("slow");
+  //content overlay stuff
+  function contentOpen(){
+    $("#overlayContent").fadeIn("slow");
+    $(".overlayWhite").fadeIn("slow");
+    $("#contentClose").fadeIn("slow");
 
-    }
-
-
-    $("#contentClose").click(function (e) {
-      e.preventDefault();
-    	$("#overlayContent").fadeOut("slow");
-    	$(".overlayWhite").fadeOut("slow");
-    	$("#contentClose").fadeOut("slow");
-      $("#overlayContent").html('');            //Remove anything in the overlay content dov so that youtube, etc. wont continue playing on close if ended early.
-      $('#drop_input').val('paste link or drag and dead-drop')
-      $('#dropzone').removeClass('active')
-    });
+  }
 
 
+  $("#contentClose").click(function (e) {
+    e.preventDefault();
+  	$("#overlayContent").fadeOut("slow");
+  	$(".overlayWhite").fadeOut("slow");
+  	$("#contentClose").fadeOut("slow");
+    $("#overlayContent").html('');            //Remove anything in the overlay content dov so that youtube, etc. wont continue playing on close if ended early.
+    $('#drop_input').val( DEFAULT_INPUT_VAL );
+    $('#dropzone').removeClass('active');
+  });
 
 
   $('#background')
@@ -248,11 +255,21 @@ $(document).ready(function() {
     $("#dropzone").removeClass('active')
   })
 
-  // col.addEventListener('dragstart', handleDragStart, false);
-  // col.addEventListener('dragenter', handleDragEnter, false);
-  // col.addEventListener('dragover', handleDragOver, false);
-  // col.addEventListener('dragleave', handleDragLeave, false);
 
+  $('#drop_input')
+  .val( DEFAULT_INPUT_VAL ) // set the default input value at page load
+  .click(function(e){
+    var val = $(this).val()
+    if (val == DEFAULT_INPUT_VAL){
+      $(this).val('');
+    }
+  })
+  .blur(function(e){
+    var val = String($(this).val()).trim()
+    if (val == ''){
+      $(this).val( DEFAULT_INPUT_VAL );
+    }
+  })
 
 
 
