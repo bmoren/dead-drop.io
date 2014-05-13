@@ -15,6 +15,7 @@ $(document).ready(function() {
   // Setup SockJS stuff
   var sock = new SockJS(_host +':9999/online');
   var online_users = $('#active-users');
+  var last_share = {}
 
   sock.onmessage = function(e) {
     online_users.text( e.data );
