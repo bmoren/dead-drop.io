@@ -50,6 +50,8 @@ $(document).ready(function() {
 
     var message = resp.message;
     if (message.type == 'image') return imageOverlay( message.url );
+
+    if (message.type =='text') return textOverlay(message.url);
     
     if (message.type == 'url') {
 
@@ -172,6 +174,13 @@ $(document).ready(function() {
     contentOpen();
   };
 
+    function textOverlay(textURL) {
+    $("#overlayContent").attr('class', '').addClass('text')
+    $("#overlayContent").html(textURL);
+    contentOpen();
+  };
+
+
   //REmember to turn on all Autoplays. 
   function youtubeOverlay(youtubeURL) {
 
@@ -189,6 +198,10 @@ $(document).ready(function() {
   function vimeoOverlay(vimeoURL) {
 
     var vimeoID = vimeo_parser(vimeoURL);
+
+    if (vimeoID == false) {
+      alert("vimeo id is no good buddy!");
+    };
 
     //iframe has class of center and embedVideo
     $("#overlayContent").html('<div><iframe src="http://player.vimeo.com/video/' + vimeoID + '?portrait=0&amp;color=ffffff&amp;autoplay=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="center embedVideo"></iframe></div>');
