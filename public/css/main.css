@@ -108,7 +108,7 @@ a:hover{
 	left:25px;
 }
 
-#infoBox{
+.box{
 	position:fixed;
 	top: 0;
 	left:0;
@@ -123,7 +123,24 @@ a:hover{
 
 }
 
-#infoClose{
+#flashMessage{
+	position:fixed;
+	text-align: center;
+	font-size: 18px;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+	height: 200px;
+	width: 300px;
+	z-index: 9999;
+	padding: 30px;
+
+}
+
+
+.close{
 	position: absolute;
 	bottom:0;
 	width:100%;

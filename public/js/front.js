@@ -105,10 +105,12 @@ $(document).ready(function() {
 
   //Hides
   $("#infoBox").hide();
-   $(".overlayWhite").hide();
-   $(".overlayTrans").hide();
-   $("#overlayContent").hide();
-   $("#contentClose").hide();
+  $(".overlayWhite").hide();
+  $(".overlayTrans").hide();
+  $("#overlayContent").hide();
+  $("#contentClose").hide();
+  $('#flashMessage').hide();
+  $('#flashClose').hide();
 
   //infoBox stuff
   $("#infoButton").click(function (e) {
@@ -171,14 +173,12 @@ $(document).ready(function() {
   ///////Embed generation functions & content injection stuff
   function imageOverlay(imageURL) {
     $("#overlayContent").attr('class', '').addClass('image')
-    $("#overlayContent").html("<img src=" + "'" + imageURL + "'" + "/>");
-    contentOpen();
+    contentOpen("<img src=" + "'" + imageURL + "'" + "/>");
   };
 
     function textOverlay(textURL) {
     $("#overlayContent").attr('class', '').addClass('text')
-    $("#overlayContent").html(textURL);
-    contentOpen();
+    contentOpen(textURL);
   };
 
 
@@ -189,11 +189,10 @@ $(document).ready(function() {
 
     if (youtubeID == false) {
       alert("youtube id is no good buddy!");
-    };
-
+    }else{
     //iframe has class of center and embedVideo
-    $("#overlayContent").html('<div><iframe src="http://www.youtube.com/embed/' + youtubeID + '?rel=0&autoplay=1" frameborder="0" allowfullscreen class="center embedVideo"></iframe></div>');
-    contentOpen();
+    contentOpen('<div><iframe src="http://www.youtube.com/embed/' + youtubeID + '?rel=0&autoplay=1" frameborder="0" allowfullscreen class="center embedVideo"></iframe></div>');
+    };  
   };
 
   function vimeoOverlay(vimeoURL) {
@@ -205,16 +204,14 @@ $(document).ready(function() {
     };
 
     //iframe has class of center and embedVideo
-    $("#overlayContent").html('<div><iframe src="http://player.vimeo.com/video/' + vimeoID + '?portrait=0&amp;color=ffffff&amp;autoplay=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="center embedVideo"></iframe></div>');
-    contentOpen();
+    contentOpen('<div><iframe src="http://player.vimeo.com/video/' + vimeoID + '?portrait=0&amp;color=ffffff&amp;autoplay=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="center embedVideo"></iframe></div>');
   };
 
   function soundcloudOverlay(soundcloudURL) {
     soundcloud_parse(soundcloudURL, function(oEmbed) {
       console.log(oEmbed);
       //iframe has class of center and soundcloud
-      $("#overlayContent").html('<div class="soundcloud center">' + oEmbed.html + '</div>');
-      contentOpen();
+      contentOpen('<div class="soundcloud center">' + oEmbed.html + '</div>');
 
     })
   };
@@ -227,7 +224,6 @@ $(document).ready(function() {
   //   contentOpen();
   // };
 
-
   //Testing for layout
   //youtubeOverlay( 'rE6pwmHHVb0');
   //vimeoOverlay('51510972');
@@ -236,13 +232,29 @@ $(document).ready(function() {
   //bandcampOverlay('1171202479');
   //bandcampOverlay('456502597');
 
+  //flashMessage('this is a test');
+
   //content overlay stuff
-  function contentOpen(){
+  function contentOpen(content){
+    $("#overlayContent").html(content)
     $("#overlayContent").fadeIn("slow");
     $(".overlayWhite").fadeIn("slow");
     $("#contentClose").fadeIn("slow");
+  };
 
-  }
+  //flash message
+  function flashMessage(err){
+    $('#flashMessage').fadeIn("slow");
+    $('#flashClose').fadeIn("slow");
+    $(".overlayTrans").fadeIn("slow");
+    $('#flashErr').html(err);
+  };
+
+  $('#flashClose').click(function (e) {
+    $('#flashMessage').fadeOut("slow");
+    $('#flashClose').fadeOut("slow");
+    $(".overlayTrans").fadeOut("slow");
+  });
 
 
   $("#contentClose").click(function (e) {
@@ -273,7 +285,7 @@ $(document).ready(function() {
     $("#dropzone").removeClass('active')
   })
 
-
+//Dragable
   $('#drop_input')
   .val( DEFAULT_INPUT_VAL ) // set the default input value at page load
   .click(function(e){
