@@ -111,6 +111,7 @@ $(document).ready(function() {
   $("#contentClose").hide();
   $('#flashMessage').hide();
   $('#flashClose').hide();
+  $(".overlayNoClick").hide();
 
   //infoBox stuff
   $("#infoButton").click(function (e) {
@@ -239,8 +240,20 @@ $(document).ready(function() {
     $("#overlayContent").html(content)
     $("#overlayContent").fadeIn("slow");
     $(".overlayWhite").fadeIn("slow");
+    $(".overlayNoClick").fadeIn("slow");
     $("#contentClose").fadeIn("slow");
   };
+
+  $("#contentClose").click(function (e) {
+    e.preventDefault();
+  	$("#overlayContent").fadeOut("slow");
+  	$(".overlayWhite").fadeOut("slow");
+    $(".overlayNoClick").fadeOut("slow");   //makes the user unable to click to pause videos or songs or drag images off the screen (this is not very 'real' but it will prevent most......)
+  	$("#contentClose").fadeOut("slow");
+    $("#overlayContent").html('');            //Remove anything in the overlay content dov so that youtube, etc. wont continue playing on close if ended early.
+    $('#drop_input').val( DEFAULT_INPUT_VAL );
+    $('#dropzone').removeClass('active');
+  });
 
   //flash message
   function flashMessage(err){
@@ -255,18 +268,6 @@ $(document).ready(function() {
     $('#flashClose').fadeOut("slow");
     $(".overlayTrans").fadeOut("slow");
   });
-
-
-  $("#contentClose").click(function (e) {
-    e.preventDefault();
-  	$("#overlayContent").fadeOut("slow");
-  	$(".overlayWhite").fadeOut("slow");
-  	$("#contentClose").fadeOut("slow");
-    $("#overlayContent").html('');            //Remove anything in the overlay content dov so that youtube, etc. wont continue playing on close if ended early.
-    $('#drop_input').val( DEFAULT_INPUT_VAL );
-    $('#dropzone').removeClass('active');
-  });
-
 
   $('#background')
   .on('dragenter', function(e){

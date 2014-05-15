@@ -68,6 +68,8 @@ a:hover{
   font-size: 14px;
 }
 
+
+/*Overlays*/
 .overlayWhite{
 	width: 100%; height: 100%;
 	background-color: #fff;
@@ -79,6 +81,14 @@ a:hover{
 	background-color: #000;
 	opacity: .5;
 	position:absolute; top:0; left:0;
+}
+
+.overlayNoClick{
+	width: 100%; height: 100%;
+	position:absolute; top:0; left:0;
+	z-index: 9998;
+/*	background-color: #738303;
+	opacity: .5;*/
 }
 
 #dropzone {
@@ -105,6 +115,7 @@ a:hover{
 	position: absolute;
 	top:25px;
 	left:25px;
+	z-index: 9999;
 }
 
 .box{
@@ -201,23 +212,17 @@ form{
 
 /*~`~`~`~`~`~`~`~`~`~`Embeds size handling stuff~`~`~`~`~`~`~`~`~`~`*/
 iframe{
-	z-index: 9999;
 	border: none;
 }
 
 .embedVideo{
-	z-index:9999;
+	z-index:9997;
 	height:80%; width: 80%;
 }
 
-.bandcamp{
-	z-index:9999;
-	height:470px; width: 470px;
-	/*width: 350px; height: 470px;*/
-}
 
 .soundcloud{
-	z-index:9999;
+	z-index:9997;
 	width:80%; height:166px;
 }
 
