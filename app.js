@@ -129,34 +129,35 @@ app.post('/share', function(req, res) {
       }
       return res.json( { message: addNew('url', req.body.image) } )
     })
+  } else {
+    // User is trying to upload a file (maybe?)
+    if (!req.files || !req.files.file) return res.json({error: 'Something went wrong'});
+
+    uploadImage( req.files.file, function(err, url){
+      if (err) {
+        console.log( err );
+        return res.json({error: 'Something else went wrong'})      
+      }
+      var type = 'text';
+      if (req.files.file.type.indexOf('image/') != -1){
+        type = 'image'
+      }
+      var previous = addNew(type, url);
+
+      if (previous.type == 'text'){
+        fs.readFile(__dirname + '/public'+ previous.url, 'utf8', function(err, data){
+          if (err){
+            return res.json({error: 'unable to read the text file, oops'})
+          }
+          previous.url = data;
+          return res.json( { message: previous } );
+        });
+      } else {
+        return res.json( { message: previous } );
+      }
+    });
   }
 
-  // User is trying to upload a file (maybe?)
-  if (!req.files || !req.files.file) return res.json({error: 'Something went wrong'});
-
-  uploadImage( req.files.file, function(err, url){
-    if (err) {
-      console.log( err );
-      return res.json({error: 'Something else went wrong'})      
-    }
-    var type = 'text';
-    if (req.files.file.type.indexOf('image/') != -1){
-      type = 'image'
-    }
-    var previous = addNew(type, url);
-
-    if (previous.type == 'text'){
-      fs.readFile(__dirname + '/public'+ previous.url, 'utf8', function(err, data){
-        if (err){
-          return res.json({error: 'unable to read the text file, oops'})
-        }
-        previous.url = data;
-        return res.json( { message: previous } );
-      });
-    } else {
-      return res.json( { message: previous } );
-    }
-  });
 });
 
 app.get('/test', function(req, res){
