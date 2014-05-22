@@ -27,6 +27,17 @@ var guid = function(){
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
 }
 
+var isImageLink = function(url){
+  if ( url.indexOf('vimeo.com/') != -1 || 
+       url.indexOf('youtube.com/') != -1 || 
+       url.indexOf('youtu.be/') != -1 || 
+       url.indexOf('soundcloud.com/') != -1
+  ){
+        return false
+  }
+  return true
+}
+
 // Setup Express Middleware
 app.set('views', __dirname +'/public/views' );
 app.engine('html', require('ejs').renderFile); 
@@ -120,14 +131,19 @@ app.post('/share', function(req, res) {
 
   // User is trying to upload a url
   if (req.body.image){
+    var _url = req.body.image;
     // perform head request here
-    request.head(req.body.image, function(err, resp, body){
-      console.log('---------------');
-      console.log( err, resp.statusCode );
-      if (resp.statusCode > 299){
+    request.head(_url, function(err, resp, body){
+      console.log( resp.headers );
+      if (resp.statusCode > 299 || err){
         return res.json({ error: "The URL you are trying to share is nonexistent, find something <i>real</i> to share." });
       }
-      return res.json( { message: addNew('url', req.body.image) } )
+
+      if(isImageLink(_url) && resp['content-type'].indexOf('image/') == -1){
+        return res.json({ error: "The URL you are trying to share is nonexistent, find something <i>real</i> to share." });
+      }
+
+      return res.json( { message: addNew('url', _url) } )
     })
   } else {
     // User is trying to upload a file (maybe?)
