@@ -111,8 +111,14 @@ $(document).ready(function() {
       return false;
     }
 
+
     $.post(url, data, function(resp){
-      handleResponse(null, resp);
+
+      if (resp.error){
+        flashMessage(resp.error);
+      }else{
+        handleResponse(null, resp);
+      }
     })
   })
 
