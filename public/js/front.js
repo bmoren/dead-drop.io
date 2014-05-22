@@ -144,10 +144,10 @@ $(document).ready(function() {
   }
 
   function vimeo_parser(url){
-    var regExp = /http:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
+    var regExp = /(http|https):\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
     var match = url.match(regExp);
     if (match){
-        return match[2]
+        return match[3]
     }else{
         return false;
     }
