@@ -4,12 +4,13 @@
   "description": "Secret Sharing Stuff",
   "main": "app.js",
   "dependencies": {
+    "async": "~0.2.10",
     "ejs": "^0.8.4",
     "express": "^3.4.4",
+    "mongoskin": "^1.4.4",
     "mustache": "~0.8.0",
-    "sugar": "~1.4.1",
     "sockjs": "~0.3.8",
-    "async": "~0.2.10"
+    "sugar": "~1.4.1"
   },
   "devDependencies": {},
   "scripts": {

@@ -1,6 +1,19 @@
 var DEFAULT_INPUT_VAL = 'paste link or drag and dead-drop';
 
 
+var checkUrlExists = function(url, cb){
+  $.ajax({
+    type: "HEAD",
+    async: true,
+    url: url,
+    success: function(msg, txt, resp){
+      console.log( msg, txt, resp );
+      cb(true);
+    }
+  })
+}
+
+
 //Lets get things going
 $(document).ready(function() {
 
