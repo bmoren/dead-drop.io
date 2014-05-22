@@ -238,7 +238,7 @@ $(document).ready(function() {
   //bandcampOverlay('1171202479');
   //bandcampOverlay('456502597');
 
-  //flashMessage('this is a test');
+  flashMessage('this is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a test');
 
   //content overlay stuff
   function contentOpen(content){
