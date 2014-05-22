@@ -4,6 +4,7 @@ var express = require('express'),
   exec = require('child_process').exec,
   http = require('http'),
   path = require('path'),
+  request = require('request'),
   // db = require('./db'),
   sockjs = require('sockjs'),
   async = require('async'),
@@ -119,7 +120,15 @@ app.post('/share', function(req, res) {
 
   // User is trying to upload a url
   if (req.body.image){
-    return res.json( { message: addNew('url', req.body.image) } )
+    // perform head request here
+    request.head(req.body.image, function(err, resp, body){
+      console.log('---------------');
+      console.log( err, resp.statusCode );
+      if (resp.statusCode > 299){
+        return res.json({ error: "The URL you are trying to share is nonexistent, find something <i>real</i> to share." });
+      }
+      return res.json( { message: addNew('url', req.body.image) } )
+    })
   }
 
   // User is trying to upload a file (maybe?)
