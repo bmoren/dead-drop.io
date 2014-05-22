@@ -64,6 +64,8 @@ $(document).ready(function() {
 
     var message = resp.message;
     if (message.type == 'image') return imageOverlay( message.url );
+
+    if (message.type =='text') return textOverlay(message.url);
     
     if (message.type == 'url') {
 
@@ -116,10 +118,13 @@ $(document).ready(function() {
 
   //Hides
   $("#infoBox").hide();
-   $(".overlayWhite").hide();
-   $(".overlayTrans").hide();
-   $("#overlayContent").hide();
-   $("#contentClose").hide();
+  $(".overlayWhite").hide();
+  $(".overlayTrans").hide();
+  $("#overlayContent").hide();
+  $("#contentClose").hide();
+  $('#flashMessage').hide();
+  $('#flashClose').hide();
+  $(".overlayNoClick").hide();
 
   //infoBox stuff
   $("#infoButton").click(function (e) {
@@ -152,10 +157,10 @@ $(document).ready(function() {
   }
 
   function vimeo_parser(url){
-    var regExp = /http:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
+    var regExp = /(http|https):\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
     var match = url.match(regExp);
     if (match){
-        return match[2]
+        return match[3]
     }else{
         return false;
     }
@@ -182,9 +187,14 @@ $(document).ready(function() {
   ///////Embed generation functions & content injection stuff
   function imageOverlay(imageURL) {
     $("#overlayContent").attr('class', '').addClass('image')
-    $("#overlayContent").html("<img src=" + "'" + imageURL + "'" + "/>");
-    contentOpen();
+    contentOpen("<img src=" + "'" + imageURL + "'" + "/>");
   };
+
+    function textOverlay(textURL) {
+    $("#overlayContent").attr('class', '').addClass('text')
+    contentOpen(textURL);
+  };
+
 
   //REmember to turn on all Autoplays. 
   function youtubeOverlay(youtubeURL) {
@@ -193,28 +203,29 @@ $(document).ready(function() {
 
     if (youtubeID == false) {
       alert("youtube id is no good buddy!");
-    };
-
+    }else{
     //iframe has class of center and embedVideo
-    $("#overlayContent").html('<div><iframe src="http://www.youtube.com/embed/' + youtubeID + '?rel=0&autoplay=1" frameborder="0" allowfullscreen class="center embedVideo"></iframe></div>');
-    contentOpen();
+    contentOpen('<div><iframe src="http://www.youtube.com/embed/' + youtubeID + '?rel=0&autoplay=1" frameborder="0" allowfullscreen class="center embedVideo"></iframe></div>');
+    };  
   };
 
   function vimeoOverlay(vimeoURL) {
 
     var vimeoID = vimeo_parser(vimeoURL);
 
+    if (vimeoID == false) {
+      alert("vimeo id is no good buddy!");
+    };
+
     //iframe has class of center and embedVideo
-    $("#overlayContent").html('<div><iframe src="http://player.vimeo.com/video/' + vimeoID + '?portrait=0&amp;color=ffffff&amp;autoplay=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="center embedVideo"></iframe></div>');
-    contentOpen();
+    contentOpen('<div><iframe src="http://player.vimeo.com/video/' + vimeoID + '?portrait=0&amp;color=ffffff&amp;autoplay=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen class="center embedVideo"></iframe></div>');
   };
 
   function soundcloudOverlay(soundcloudURL) {
     soundcloud_parse(soundcloudURL, function(oEmbed) {
       console.log(oEmbed);
       //iframe has class of center and soundcloud
-      $("#overlayContent").html('<div class="soundcloud center">' + oEmbed.html + '</div>');
-      contentOpen();
+      contentOpen('<div class="soundcloud center">' + oEmbed.html + '</div>');
 
     })
   };
@@ -227,7 +238,6 @@ $(document).ready(function() {
   //   contentOpen();
   // };
 
-
   //Testing for layout
   //youtubeOverlay( 'rE6pwmHHVb0');
   //vimeoOverlay('51510972');
@@ -236,25 +246,41 @@ $(document).ready(function() {
   //bandcampOverlay('1171202479');
   //bandcampOverlay('456502597');
 
+  //flashMessage('this is a test');
+
   //content overlay stuff
-  function contentOpen(){
+  function contentOpen(content){
+    $("#overlayContent").html(content)
     $("#overlayContent").fadeIn("slow");
     $(".overlayWhite").fadeIn("slow");
+    $(".overlayNoClick").fadeIn("slow");
     $("#contentClose").fadeIn("slow");
-
-  }
-
+  };
 
   $("#contentClose").click(function (e) {
     e.preventDefault();
   	$("#overlayContent").fadeOut("slow");
   	$(".overlayWhite").fadeOut("slow");
+    $(".overlayNoClick").fadeOut("slow");   //makes the user unable to click to pause videos or songs or drag images off the screen (this is not very 'real' but it will prevent most......)
   	$("#contentClose").fadeOut("slow");
     $("#overlayContent").html('');            //Remove anything in the overlay content dov so that youtube, etc. wont continue playing on close if ended early.
     $('#drop_input').val( DEFAULT_INPUT_VAL );
     $('#dropzone').removeClass('active');
   });
 
+  //flash message
+  function flashMessage(err){
+    $('#flashMessage').fadeIn("slow");
+    $('#flashClose').fadeIn("slow");
+    $(".overlayTrans").fadeIn("slow");
+    $('#flashErr').html(err);
+  };
+
+  $('#flashClose').click(function (e) {
+    $('#flashMessage').fadeOut("slow");
+    $('#flashClose').fadeOut("slow");
+    $(".overlayTrans").fadeOut("slow");
+  });
 
   $('#background')
   .on('dragenter', function(e){
@@ -273,7 +299,7 @@ $(document).ready(function() {
     $("#dropzone").removeClass('active')
   })
 
-
+//Dragable
   $('#drop_input')
   .val( DEFAULT_INPUT_VAL ) // set the default input value at page load
   .click(function(e){

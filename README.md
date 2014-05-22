@@ -17,15 +17,6 @@ Install / Run the app
 3. Start the app with: `node app.js`, then visit `http://localhost:8999`
 
 
-Todo
-------
-
-* Add support for txt, md, csv
-* Support for soundcloud, bandcamp, youtube links
-* Data persistence, for if/when the server crashes
-* Stress-test the application (using `ab` or something)
-
-
 Contributors
 -----------
 - @mediaupstream
