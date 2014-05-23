@@ -184,11 +184,9 @@ $(document).ready(function() {
 
     function textOverlay(textURL) {
     $("#overlayContent").attr('class', '').addClass('text')
-    contentOpen( '<textarea class="textArea center">' + textURL +  '</textarea>' );
+    contentOpen( '<textarea class="textArea center">' + textURL +  '</textarea>', 'text' );
   };
 
-
-  //REmember to turn on all Autoplays. 
   function youtubeOverlay(youtubeURL) {
 
     var youtubeID = youtube_parser(youtubeURL);
@@ -241,11 +239,13 @@ $(document).ready(function() {
   //flashMessage('this is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a testthis is a test');
 
   //content overlay stuff
-  function contentOpen(content){
+  function contentOpen(content, type){
     $("#overlayContent").html(content)
     $("#overlayContent").fadeIn("slow");
     $(".overlayWhite").fadeIn("slow");
-    $(".overlayNoClick").fadeIn("slow");
+    if (type != 'text') {
+      $(".overlayNoClick").fadeIn("slow");
+    };
     $("#contentClose").fadeIn("slow");
   };
 
