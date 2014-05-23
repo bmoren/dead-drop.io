@@ -9,14 +9,6 @@ Dead-Drop.io is a place for media dead-drops. To use it, simply drag and drop a 
 **Give something, get something.**  
 
 
-Install / Run the app
-------------
-
-1. Clone or Download the project
-2. `cd` into the project folder in a terminal and run `npm install`
-3. Start the app with: `node app.js`, then visit `http://localhost:8999`
-
-
 Contributors
 -----------
 - @mediaupstream
