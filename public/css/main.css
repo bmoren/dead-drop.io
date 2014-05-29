@@ -134,7 +134,10 @@ a:hover{
 }
 
 #flashMessage{
-	position:fixed;
+
+	/*fix this so it is not so crappy on the center */
+
+	/*position:fixed;
 	text-align: center;
 	font-size: 18px;
 	top: 0;
@@ -142,11 +145,25 @@ a:hover{
 	bottom: 0;
 	right: 0;
 	margin: auto;
-	height: 200px;
+	height: 100px;
 	width: 300px;
 	z-index: 9999;
-	padding: 30px;
+	padding: 30px;*/
 
+	width: 400px;
+	z-index:9999;
+	padding:30px;
+	margin: auto;
+	margin-top: 18%;
+	text-align:center;
+	font-size:18px;
+	position:relative;
+
+}
+
+#flashErr{
+	padding: 30px;
+	padding-top: 10px;
 }
 
 
@@ -224,6 +241,14 @@ iframe{
 .soundcloud{
 	z-index:9997;
 	width:80%; height:166px;
+}
+
+.textArea{
+	position: absolute;
+	width: 80%;
+	height: 70%;
+	font-size: 20px;
+	font-family: 'Montserrat', sans-serif;
 }
 
 /*~`~`~`~`~`~`~`~`Image size handling stuff~`~`~`~`~`~`~`~`~`~`*/
