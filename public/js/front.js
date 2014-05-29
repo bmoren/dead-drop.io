@@ -189,7 +189,6 @@ $(document).ready(function() {
 
   function youtubeOverlay(youtubeURL) {
 
-
     var youtubeID = youtube_parser(youtubeURL);
 
     if (youtubeID == false) {
