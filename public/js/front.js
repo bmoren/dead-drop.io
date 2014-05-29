@@ -22,8 +22,6 @@ $(document).ready(function() {
     online_users.text( e.data );
   };
 
-
-
   // Dropzone stuff
   Dropzone.options.dropzone = {
     maxFilesize: 100,
@@ -35,11 +33,9 @@ $(document).ready(function() {
     createImageThumbnails: false,
     acceptedFiles: 'image/*,text/plain,text/csv,text/x-markdown',
     accept: function(file, done) {
-      // console.log( file )
       done()
     }
   }
-
 
   var handleResponse = function(file, resp){
     if (resp.error){
