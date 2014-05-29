@@ -3,8 +3,6 @@ var DEFAULT_INPUT_VAL = 'paste link or drag and dead-drop';
 //Lets get things going
 $(document).ready(function() {
 
-  console.log('the deploy worked on try #4');
-
   var _host = 'http://'+ window.location.hostname;
 
   // donation stuff
@@ -71,10 +69,6 @@ $(document).ready(function() {
 
       else if ( message.url.indexOf('soundcloud.com/') != -1){
         return soundcloudOverlay( message.url )
-      }
-
-      else if ( message.url.indexOf('bandcamp.com/') != -1){
-        return bandcampOverlay( message.url )
       }
       message.url = addHttp( message.url );
       imageOverlay( message.url )
