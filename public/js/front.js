@@ -74,10 +74,6 @@ $(document).ready(function() {
       else if ( message.url.indexOf('soundcloud.com/') != -1){
         return soundcloudOverlay( message.url )
       }
-
-      else if ( message.url.indexOf('bandcamp.com/') != -1){
-        return bandcampOverlay( message.url )
-      }
       message.url = addHttp( message.url );
       imageOverlay( message.url )
     }
