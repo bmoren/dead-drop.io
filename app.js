@@ -134,16 +134,28 @@ app.post('/share', function(req, res) {
     var _url = req.body.image;
     // perform head request here
     request.head(_url, function(err, resp, body){
-      console.log( resp.headers );
+      // check that the _url is accessible online
       if (resp.statusCode > 299 || err){
         return res.json({ error: "The URL you are trying to share is nonexistent, find something <i>real</i> to share." });
       }
 
-      if(isImageLink(_url) && resp['content-type'].indexOf('image/') == -1){
-        return res.json({ error: "The URL you are trying to share is nonexistent, find something <i>real</i> to share." });
-      }
+      // if the file is a .txt, get the contents and return it right away
+      if (resp.headers['content-type'].indexOf('text/plain') != -1){
 
-      return res.json( { message: addNew('url', _url) } )
+        request.get(_url, function(err2, resp2, text){
+          return res.json( { message: addNew('text', text) } )
+        })
+
+      } else {
+
+        // If the url is not an image and not a vimeo/youtube/soundcloud, return an error
+        if(isImageLink(_url) && resp.headers['content-type'].indexOf('image/') == -1){
+          return res.json({ error: "The URL you are trying to share is nonexistent, find something <i>real</i> to share." });
+        }
+
+        // return the image or vimeo/youtube/soundcloud URL now!
+        return res.json( { message: addNew('url', _url) } )
+      }
     })
   } else {
     // User is trying to upload a file (maybe?)
