@@ -5,7 +5,7 @@ var express = require('express'),
   http = require('http'),
   path = require('path'),
   request = require('request'),
-  // db = require('./db'),
+  DB = require('./db'),
   sockjs = require('sockjs'),
   async = require('async'),
 	app = express(),
@@ -40,7 +40,10 @@ var isImageLink = function(url){
 
 // Setup Express Middleware
 app.set('views', __dirname +'/public/views' );
-app.engine('html', require('ejs').renderFile); 
+app.engine('html', require('ejs').renderFile);
+
+// create new database instance 
+var db = new DB('deaddrop')
 
 //
 // Middleware to clean out the img/uploads garbage
@@ -81,6 +84,7 @@ app.use(function serveFile(req, res, next){
 
 app.use(express.bodyParser());
 app.use(express.cookieParser('some secret'));
+app.use(express.session());
 
 app.use(express.static('public'));
 
@@ -123,6 +127,13 @@ var addNew = function(type, url){
   return response                           // return the previously added 'message'
 }
 
+var getMediaType = function(url){
+  if ( url.indexOf('vimeo.com/') != -1)       return 'vimeo';
+  if ( url.indexOf('youtube.com/') != -1)     return 'youtube';
+  if ( url.indexOf('youtu.be/') != -1)        return 'youtube';
+  if ( url.indexOf('soundcloud.com/') != -1)  return 'soundcloud';
+  return 'image';
+}
 
 //
 // Share endpoint receives url or file uploads and does stuff
@@ -143,6 +154,14 @@ app.post('/share', function(req, res) {
       if (resp.headers['content-type'].indexOf('text/plain') != -1){
 
         request.get(_url, function(err2, resp2, text){
+          // successful share!
+          db.saveShare(req, {
+            url: req.body.image,
+            type: 'url',
+            mediatype: 'text',
+            dropped: false,
+            mimetype: resp.headers['content-type']
+          })
           return res.json( { message: addNew('text', text) } )
         })
 
@@ -154,6 +173,15 @@ app.post('/share', function(req, res) {
         }
 
         // return the image or vimeo/youtube/soundcloud URL now!
+        // successful share!
+
+        db.saveShare(req, {
+          url: req.body.image,
+          type: 'url',
+          mediatype: getMediaType(_url),
+          dropped: false,
+          mimetype: resp.headers['content-type']
+        })
         return res.json( { message: addNew('url', _url) } )
       }
     })
@@ -170,8 +198,19 @@ app.post('/share', function(req, res) {
       if (req.files.file.type.indexOf('image/') != -1){
         type = 'image'
       }
+
+      // successful share!
+      db.saveShare(req, {
+        url: url,
+        type: type,
+        mediatype: type,
+        dropped: true,
+        mimetype: req.files.file.type
+      })
+
       var previous = addNew(type, url);
 
+      // check for the http on the url
       if (previous.type == 'text'){
         fs.readFile(__dirname + '/public'+ previous.url, 'utf8', function(err, data){
           if (err){
@@ -187,10 +226,6 @@ app.post('/share', function(req, res) {
   }
 
 });
-
-app.get('/test', function(req, res){
-  return res.json({test:'ok'})
-})
 
 
 //

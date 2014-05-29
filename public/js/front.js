@@ -53,6 +53,8 @@ $(document).ready(function() {
     var message = resp.message;
     if (message.type == 'image') return imageOverlay( message.url );
 
+    console.log( message );
+
     if (message.type =='text') return textOverlay(message.url);
     
     if (message.type == 'url') {
