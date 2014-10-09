@@ -21,10 +21,10 @@ DB.prototype.saveShare = function(req, data){
   var self = this;
   var share = {
     url: '',
-    type: '',
-    mediatype: '',
+    type: '',       // image, url, text
+    mediatype: '',  // image, text, vimeo, youtube, soundcloud
     mimetype: '',
-    dropped: false,
+    dropped: false, // if true the user drag/drop'd an item, if false they pasted a url
     user_agent: req.headers['user-agent'],
     ip: req.connection.remoteAddress || 0,
     created: Date.now()
@@ -35,9 +35,11 @@ DB.prototype.saveShare = function(req, data){
   delete share.url;
 
   async.parallel([
+    // add the new share
     function(done){
       self.db.share.insert(share, done)
     },
+    // update the recover share data
     function(done){
       var doc = {
         lastUrl: lastUrl, 
