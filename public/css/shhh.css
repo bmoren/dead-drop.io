@@ -1,0 +1,17 @@
+body{
+	background: black;
+	color: lightgrey;
+	font-family: "helvetica", sans-serif;
+
+}
+
+a{
+	color: white;
+	text-decoration: none;
+
+}
+
+a:hover{
+	color:magenta;
+	text-decoration: underline;
+}

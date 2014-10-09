@@ -5,7 +5,7 @@ var express = require('express'),
   http = require('http'),
   path = require('path'),
   request = require('request'),
-  DB = require('./db'),
+  db = require('./db'),
   sockjs = require('sockjs'),
   async = require('async'),
 	app = express(),
@@ -18,6 +18,9 @@ require('sugar') // yum!
 
 // rebuild uploads directory
 exec('./rebuild.sh')
+
+
+var DB = new db('deaddrop')
 
 // faux-guid generation, bwahaha
 var s4 = function() {
@@ -42,8 +45,6 @@ var isImageLink = function(url){
 app.set('views', __dirname +'/public/views' );
 app.engine('html', require('ejs').renderFile);
 
-// create new database instance 
-var db = new DB('deaddrop')
 
 //
 // Middleware to clean out the img/uploads garbage
@@ -155,7 +156,7 @@ app.post('/share', function(req, res) {
 
         request.get(_url, function(err2, resp2, text){
           // successful share!
-          db.saveShare(req, {
+          DB.saveShare(req, {
             url: req.body.image,
             type: 'url',
             mediatype: 'text',
@@ -175,7 +176,7 @@ app.post('/share', function(req, res) {
         // return the image or vimeo/youtube/soundcloud URL now!
         // successful share!
 
-        db.saveShare(req, {
+        DB.saveShare(req, {
           url: req.body.image,
           type: 'url',
           mediatype: getMediaType(_url),
@@ -200,7 +201,7 @@ app.post('/share', function(req, res) {
       }
 
       // successful share!
-      db.saveShare(req, {
+      DB.saveShare(req, {
         url: url,
         type: type,
         mediatype: type,
@@ -226,6 +227,26 @@ app.post('/share', function(req, res) {
   }
 
 });
+
+
+app.get('/shhh', function(req, res){
+  DB.getShares(function(err, data){
+    if (err) console.log(err)
+    return res.json(data)
+  })
+})
+
+app.get('/shhh/ares', function(req,res){
+  res.render('shares.html');
+
+})
+
+
+// app.get('/make-fake-data', function(req,res){
+//   DB.fakeData()
+//   return res.json({'ok': 'lol'})
+// })
+
 
 
 //

@@ -34,6 +34,13 @@ $(document).ready(function() {
     acceptedFiles: 'image/*,text/plain,text/csv,text/x-markdown',
     accept: function(file, done) {
       done()
+    },
+    init: function() {
+      this.on("addedfile", function() {
+        if (this.files[1] != null){
+          this.removeFile(this.files[0])
+        }
+      })
     }
   }
 
