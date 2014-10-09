@@ -13,4 +13,9 @@ user_agent String
 statusCode String
 ip String (?)
 created Datetime
+date_obj Object {
+  year Number
+  month Number (0: Jan)
+  day Number
+}
 

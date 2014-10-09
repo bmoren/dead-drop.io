@@ -19,6 +19,7 @@ var DB = function(dbname){
 //
 DB.prototype.saveShare = function(req, data){
   var self = this;
+  var created = new Date()
   var share = {
     url: '',
     type: '',       // image, url, text
@@ -27,25 +28,31 @@ DB.prototype.saveShare = function(req, data){
     dropped: false, // if true the user drag/drop'd an item, if false they pasted a url
     user_agent: req.headers['user-agent'],
     ip: req.connection.remoteAddress || 0,
-    created: Date.now()
+    created: created.getTime(),
+    date_obj: {
+      year: created.getFullYear(),
+      month: created.getMonth()+1, // +1 for month offset, boo
+      day: created.getDate()
+    }
   }
 
   Object.merge(share, data);
   var lastUrl = share.url;
   delete share.url;
 
-  async.parallel([
+  async.waterfall([
     // add the new share
-    function(done){
-      self.db.share.insert(share, done)
+    function(next){
+      self.db.share.insert(share, next)
     },
     // update the recover share data
-    function(done){
+    function(share, next){
       var doc = {
         lastUrl: lastUrl, 
+        share_id: share[0]._id,
         updated: Date.now()
       }
-      self.db.recover.update({_id: 'lastUrl'}, {$set: doc}, {upsert: true}, done)
+      self.db.recover.update({_id: 'lastUrl'}, {$set: doc}, {upsert: true}, next)
     }
   ], function(err, results){
     if (err){
@@ -57,6 +64,46 @@ DB.prototype.saveShare = function(req, data){
 
 DB.prototype.getShares = function(cb){
   this.db.share.find().toArray(cb)
+}
+
+DB.prototype.getInitialShare = function(cb){
+  var self = this;
+  self.db.recover.find().toArray(function(err, doc){
+    self.db.share.find({_id: doc[0].share_id}).toArray(function(err, share){
+      share[0].__url = doc[0].lastUrl
+      cb(err, share[0])
+    })
+  })
+}
+
+var migrations = {}
+
+migrations.data_obj = function(share){
+  var created = new Date(share.created)
+  var data = {
+    year: created.getFullYear(),
+    month: created.getMonth()+1,
+    day: created.getDate()
+  }
+  share.data_obj = data;
+  return share;
+}
+
+DB.prototype.migrations = function(cb){
+  var self = this;
+  var fns = []
+  this.getShares(function(err, shares){
+    shares.forEach(function(share){
+      fns.push(function(done){
+        console.log( '> processing share:', share._id )
+        share = migrations.data_obj(share)
+        var id = share._id
+        delete share._id
+        self.db.share.update({_id: id}, {$set: share}, done)
+      })
+    })
+    async.parallel(fns, cb)
+  })
 }
 
 

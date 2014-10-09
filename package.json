@@ -13,7 +13,9 @@
     "sockjs": "~0.3.8",
     "sugar": "~1.4.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "basic-auth": "^1.0.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -1,35 +1,25 @@
-d3.json("/shhh", function(error, json) {
+d3.json("/api/shares", function(error, json) {
 	if (error) return console.warn(error);
 	data = json;
 
 	console.log(data); // log it out mango!
 
-	//console.log('total db entries: ' + data.length); //total entries
+	var recent = data[data.length-1]
 
-	var shareMoment = moment(data[data.length-1].created, "YYYYMMDD").fromNow(); //what is going on with the super long time ago thing here?
-	//console.log('shareMoment: ' + shareMoment);
-
-	//console.log(data[data.length-1].url) 
-	var lastURL = data[data.length-1].url; // get current url
+	var shareMoment = moment(recent.created).fromNow();
+	var shareType = recent.type;
+	var lastURL = recent.url; // get current url
 
 	$('.total').html('total shares: ' + data.length);
-	$('.current').html('Current Share URL: <a href="' + lastURL + '">' + lastURL + '</a>');
+	$('.current').html('last share type: '+ shareType);
 	$('.time').html('time since last share: '+ shareMoment);
 
-
-	for (var i = data.length - 1; i >= 0; i--) {
+	for (var i=0; i<data.length; i++){
+		return;
 		console.log(data[i].user_agent);
 		console.log(data[i].mimetype);
 		console.log(data[i].type);
-
-	};
-
+	}
 
 
-
-
-
-});
-
-
-		
+})

@@ -8,6 +8,7 @@ var express = require('express'),
   db = require('./db'),
   sockjs = require('sockjs'),
   async = require('async'),
+  auth = require('basic-auth'),
 	app = express(),
   messages = [],
   garbage = [],
@@ -17,8 +18,7 @@ var express = require('express'),
 require('sugar') // yum!
 
 // rebuild uploads directory
-exec('./rebuild.sh')
-
+// exec('./rebuild.sh')
 
 var DB = new db('deaddrop')
 
@@ -44,6 +44,18 @@ var isImageLink = function(url){
 // Setup Express Middleware
 app.set('views', __dirname +'/public/views' );
 app.engine('html', require('ejs').renderFile);
+
+
+var authAdmin = function(req, res, next) {
+  var user = auth(req);
+  if (user === undefined || user['name'] !== 'admin' || user['pass'] !== 'password') {
+      res.statusCode = 401;
+      res.setHeader('WWW-Authenticate', 'Basic realm="DeadDrop"');
+      res.end('Unauthorized');
+  } else {
+      next();
+  }
+}
 
 
 //
@@ -74,7 +86,6 @@ app.use(function removeGarbage(req, res, next){
 app.use(function serveFile(req, res, next){
   if (req.url.indexOf('/img/uploads/') != -1){
     var url = path.normalize( __dirname + '/public' + req.url )
-    // console.log('+ add', url, 'to garbage collection')
     garbage.push(url)
   }
   next();
@@ -95,8 +106,14 @@ var Message = function(type, url){
   this.url = url || '/img/uploads/1st.jpg';
 }
 
-// Initialize our messages and download lists
-messages.push( new Message('image', '/img/uploads/1st.jpg') )
+
+// Get the last share (prior to server crash, for example...)
+// note: this happens once on server startup
+DB.getInitialShare(function(err, share){
+  if (err) console.log(err)
+  messages.push( new Message(share.type, share.__url) )
+})
+
 
 //
 // Upload Images method
@@ -147,7 +164,7 @@ app.post('/share', function(req, res) {
     // perform head request here
     request.head(_url, function(err, resp, body){
       // check that the _url is accessible online
-      if (resp.statusCode > 299 || err){
+      if (!resp || resp.statusCode > 299 || err){
         return res.json({ error: "The URL you are trying to share is nonexistent, find something <i>real</i> to share." });
       }
 
@@ -229,14 +246,14 @@ app.post('/share', function(req, res) {
 });
 
 
-app.get('/shhh', function(req, res){
+app.get('/api/shares', authAdmin, function(req, res){
   DB.getShares(function(err, data){
     if (err) console.log(err)
     return res.json(data)
   })
 })
 
-app.get('/shhh/ares', function(req,res){
+app.get('/shhh', authAdmin, function(req,res){
   res.render('shares.html');
 
 })

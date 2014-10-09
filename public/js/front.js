@@ -3,8 +3,6 @@ var DEFAULT_INPUT_VAL = 'paste link or drag and dead-drop';
 //Lets get things going
 $(document).ready(function() {
 
-  console.log('the deploy worked on try #4');
-
   var _host = 'http://'+ window.location.hostname;
 
   // donation stuff
@@ -51,12 +49,12 @@ $(document).ready(function() {
       return;
     }
 
-    console.log( 'uploaded: ', resp )
+    // console.log( 'uploaded: ', resp )
 
     var message = resp.message;
     if (message.type == 'image') return imageOverlay( message.url );
 
-    console.log( message );
+    // console.log( message );
 
     if (message.type =='text') return textOverlay(message.url);
     
@@ -216,7 +214,7 @@ $(document).ready(function() {
 
   function soundcloudOverlay(soundcloudURL) {
     soundcloud_parse(soundcloudURL, function(oEmbed) {
-      console.log(oEmbed);
+      // console.log(oEmbed);
       //iframe has class of center and soundcloud
       contentOpen('<div class="soundcloud center">' + oEmbed.html + '</div>');
 
