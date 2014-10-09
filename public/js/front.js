@@ -13,12 +13,23 @@ $(document).ready(function() {
 
   // Setup SockJS stuff
   var sock = new SockJS(_host +':9999/online');
-  var online_users = $('#active-users');
-  var last_share = {}
+  var lastDrop = $('#last-drop-time');
+  var last_share = 0
 
   sock.onmessage = function(e) {
-    online_users.text( e.data );
+    if (e && e.data){
+      updateShareTime(e.data)
+    }
   };
+
+  var updateShareTime = function(time){
+    if (time) last_share = Number(time)
+    lastDrop.text( moment(last_share).fromNow() );
+  }
+
+  setInterval(function(){
+    updateShareTime()
+  }, 1000 * 15)
 
   // Dropzone stuff
   Dropzone.options.dropzone = {

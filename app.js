@@ -101,9 +101,10 @@ app.use(express.session());
 app.use(express.static('public'));
 
 // Message Object
-var Message = function(type, url){
+var Message = function(type, url, created){
   this.type = type || 'image';
   this.url = url || '/img/uploads/1st.jpg';
+  this.created = created || Date.now()
 }
 
 
@@ -111,7 +112,7 @@ var Message = function(type, url){
 // note: this happens once on server startup
 DB.getInitialShare(function(err, share){
   if (err) console.log(err)
-  messages.push( new Message(share.type, share.__url) )
+  messages.push( new Message(share.type, share.__url, share.created) )
 })
 
 
@@ -142,6 +143,7 @@ var addNew = function(type, url){
   var message = new Message(type, url)      // create a new url 'message'
   var response = messages.pop()             // grab the last 'message'
   messages.push(message)                    // add the new 'message'
+  broadcast(Date.now())
   return response                           // return the previously added 'message'
 }
 
@@ -200,6 +202,7 @@ app.post('/share', function(req, res) {
           dropped: false,
           mimetype: resp.headers['content-type']
         })
+
         return res.json( { message: addNew('url', _url) } )
       }
     })
@@ -255,7 +258,6 @@ app.get('/api/shares', authAdmin, function(req, res){
 
 app.get('/shhh', authAdmin, function(req,res){
   res.render('shares.html');
-
 })
 
 
@@ -281,7 +283,6 @@ app.listen(port, function(){
 // SockJS - Realtime stuff below, argh!! ;-)
 //
 
-var online_users = 0;
 var clients = {};
 var online = sockjs.createServer({
   log: function(){}
@@ -299,16 +300,15 @@ online.on('connection', function(conn) {
 
   // someone joined, add them to the party!
   clients[conn.id] = conn;
-  online_users++;
 
   // Tell all clients how many online users exist
-  broadcast( online_users );
+  broadcast( messages[0].created );
 
   // someone left, update all clients
   conn.on('close', function() {
     delete clients[conn.id];
-    online_users--;
-    broadcast( online_users );
+    // online_users--;
+    // broadcast( online_users );
   })
 
 })

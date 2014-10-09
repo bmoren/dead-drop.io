@@ -70,6 +70,7 @@ DB.prototype.getInitialShare = function(cb){
   var self = this;
   self.db.recover.find().toArray(function(err, doc){
     self.db.share.find({_id: doc[0].share_id}).toArray(function(err, share){
+      if (!share[0]) share[0] = {}
       share[0].__url = doc[0].lastUrl
       cb(err, share[0])
     })

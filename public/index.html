@@ -3,9 +3,10 @@
 	<title>dead-drop.io - Temporal Sharing</title>
 	<link rel="shortcut icon" href="favicon.ico" />
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="js/plugins/dropzone.js"></script>
-	<script src="js/plugins/sockjs-0.3.min.js"></script>
-	<script src="js/front.js"></script>
+	<script src="/js/plugins/dropzone.js"></script>
+	<script src="/js/plugins/sockjs-0.3.min.js"></script>
+	<script src="/js/plugins/moment.js"></script>
+	<script src="/js/front.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
 	<script src="http://connect.soundcloud.com/sdk.js"></script>
@@ -18,8 +19,8 @@
 		</svg>
 	</div> 
 
-	<div class="top" style="display:none;">
-		Last dead-drop at: <span id="active-users">0</span>
+	<div class="top">
+		Last dead-drop was <span id="last-drop-time"></span>
 	</div>
 
 	<div class="inputBoxSize center">
