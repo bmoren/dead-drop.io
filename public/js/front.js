@@ -20,8 +20,6 @@ $(document).ready(function() {
     online_users.text( e.data );
   };
 
-
-
   // Dropzone stuff
   Dropzone.options.dropzone = {
     maxFilesize: 100,
@@ -44,7 +42,6 @@ $(document).ready(function() {
     }
   }
 
-
   var handleResponse = function(file, resp){
     if (resp.error){
       console.log( resp );
@@ -52,10 +49,12 @@ $(document).ready(function() {
       return;
     }
 
-    console.log( 'uploaded: ', resp )
+    // console.log( 'uploaded: ', resp )
 
     var message = resp.message;
     if (message.type == 'image') return imageOverlay( message.url );
+
+    // console.log( message );
 
     if (message.type =='text') return textOverlay(message.url);
     
@@ -216,7 +215,7 @@ $(document).ready(function() {
 
   function soundcloudOverlay(soundcloudURL) {
     soundcloud_parse(soundcloudURL, function(oEmbed) {
-      console.log(oEmbed);
+      // console.log(oEmbed);
       //iframe has class of center and soundcloud
       contentOpen('<div class="soundcloud center">' + oEmbed.html + '</div>');
 
