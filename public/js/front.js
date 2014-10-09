@@ -1,4 +1,4 @@
-var DEFAULT_INPUT_VAL = 'paste link or drag and dead-drop';
+var DEFAULT_INPUT_VAL = 'media link or drag and dead-drop';
 
 //Lets get things going
 $(document).ready(function() {
@@ -112,8 +112,9 @@ $(document).ready(function() {
 
     $.post(url, data, function(resp){
 
+      //Error handling...
       if (resp.error){
-        flashMessage(resp.error);
+        shake(); // shake on error!
       }else{
         handleResponse(null, resp);
       }
@@ -272,19 +273,28 @@ $(document).ready(function() {
     $('#dropzone').removeClass('active');
   });
 
-  //flash message
-  function flashMessage(err){
-    $('#flashMessage').fadeIn("slow");
-    $('#flashClose').fadeIn("slow");
-    $(".overlayTrans").fadeIn("slow");
-    $('#flashErr').html(err);
-  };
+  // //flash message
+  // function flashMessage(err){
+  //   $('#flashMessage').fadeIn("slow");
+  //   $('#flashClose').fadeIn("slow");
+  //   $(".overlayTrans").fadeIn("slow");
+  //   $('#flashErr').html(err);
+  // };
 
-  $('#flashClose').click(function (e) {
-    $('#flashMessage').fadeOut("slow");
-    $('#flashClose').fadeOut("slow");
-    $(".overlayTrans").fadeOut("slow");
-  });
+  // $('#flashClose').click(function (e) {
+  //   $('#flashMessage').fadeOut("slow");
+  //   $('#flashClose').fadeOut("slow");
+  //   $(".overlayTrans").fadeOut("slow");
+  // });
+
+  //shake
+  function shake(){
+    $('#inputContainer').addClass('animated shake')
+
+    setTimeout(function() {
+      $('#inputContainer').removeClass('animated shake');
+    }, 1100);
+  }
 
   $('#background')
   .on('dragenter', function(e){

@@ -8,6 +8,7 @@
 	<script src="/js/plugins/moment.js"></script>
 	<script src="/js/front.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="css/animate.css">
 	<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
 	<script src="http://connect.soundcloud.com/sdk.js"></script>
 </head>
@@ -23,7 +24,7 @@
 		Last dead-drop was <span id="last-drop-time"></span>
 	</div>
 
-	<div class="inputBoxSize center">
+	<div id="inputContainer" class="center">
 		<form id="share-form" action="/share" method="post">
 			<input id="drop_input" class="textBox drop" type="text" name="image"><input class="submit drop" type="submit" value="drop" id="submit-btn">
 		</form>
@@ -49,9 +50,9 @@
 			</p>
 
 			<p>
-				<b>Suported File Formats:</b> <br> .gif .jpg .png .bmp .txt 
+				<b>Suported File Formats:</b> <br /> .gif .jpg .png .bmp .txt 
 				<br />
-				<b>Linked File Formats:</b> <br> Vimeo, Youtube, SoundCloud 
+				<b>Linked File Formats:</b> <br /> Vimeo, Youtube, SoundCloud 
 				<br />
 				<b>Filesize Limit:</b> 25mb
 			</p>
@@ -75,12 +76,12 @@
 		</div>
 	</div>
 
-	<div id="flashMessage" class="drop flashMsg">
+	<!-- <div id="flashMessage" class="drop flashMsg">
 		<div id="flashErr">Generic Error Message</div>
 	<div id="flashClose" class="close">
 			<a href="#"><img class="icons" src="img/closeButton.png" /></a>
 		</div>
-	</div>
+	</div> -->
 
 <div class="overlayWhite"></div>
 <div class="overlayTrans"></div>
