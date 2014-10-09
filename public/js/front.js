@@ -1,4 +1,4 @@
-var DEFAULT_INPUT_VAL = 'paste link or drag and dead-drop';
+var DEFAULT_INPUT_VAL = 'media link or drag and dead-drop';
 
 //Lets get things going
 $(document).ready(function() {
@@ -278,7 +278,11 @@ $(document).ready(function() {
 
   //shake
   function shake(){
-    $('.inputBoxSize').addClass('animate shake');
+    $('#inputContainer').addClass('animated shake')
+
+    setTimeout(function() {
+      $('#inputContainer').removeClass('animated shake');
+    }, 1100);
   }
 
   $('#background')
