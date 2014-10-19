@@ -2,26 +2,49 @@
 <html>
 <head>
 	<title>shhh</title>
-	<link rel="stylesheet" type="text/css" href="/css/nv.d3.min.css">
 	<link rel="stylesheet" type="text/css" href="/css/shhh.css">
+	<link rel="stylesheet" type="text/css" href="/css/nv.d3.min.css">
 	<script src="/js/plugins/d3.min.js"></script>
 	<script src="/js/plugins/nv.d3.min.js"></script>
 	<script src="/js/plugins/moment.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="/js/plugins/jquery.masonry.min.js"></script>
 	<script src="/js/shhh.js"></script>
+
+
 </head>
 <body>
 
-<section class="text">
-	<div class="total"></div>
-	<div class="current"></div>
-	<div class="time"></div>
-</section>
+<h1>Shhh...</h1>
 
-<section class="graphs">
-	<div class="graph"></div>
+<div id="container">
+	<div id="text" class="graphbox">
+		<em>Current Share</em>
+		<div class="total"></div>
+		<div class="shareType"></div>
+		<div class="mediaType"></div>
+		<div class="time"></div>
+	</div>
 
-</section>
+	<div id="mediaTypesPie" class="graphbox">
+		<em>Media Types</em>
+		<svg></svg>
+	</div>
+
+	<div id="userAgentPie" class="graphbox">
+		<em>User Agents</em>
+		<svg></svg>
+	</div>
+
+	<div id="dropLinkBar" class="graphbox">
+		<em>Drops vs. Links</em>
+		<svg></svg>
+	</div>
+
+</div>
+
+
+
 
 </body>
 </html>

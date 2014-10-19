@@ -254,6 +254,7 @@ app.get('/api/shares', authAdmin, function(req, res){
     if (err) console.log(err)
     return res.json(data)
   })
+
 })
 
 app.get('/shhh', authAdmin, function(req,res){
