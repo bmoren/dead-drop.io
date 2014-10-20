@@ -3,12 +3,11 @@ a{color: white;text-decoration: none;}
 a:hover{color:magenta;text-decoration: underline;}
 h1{text-decoration: underline;}
 em{text-decoration: underline;}
-
+.center{text-align: center;}
 
 
 /*GRAPHS!*/
 .graphbox{
-	position:absolute;
 	width: 400px;
 	margin: 5px;
 
@@ -20,9 +19,9 @@ em{text-decoration: underline;}
 	float: left;
 }
 
-
 #mediaTypesPie svg {height: 400px;}
 #userAgentPie svg {height: 400px;}
 #dropLinkBar svg {height: 400px;}
+#sharesTime svg {height: 400px;}
 
 

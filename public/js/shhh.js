@@ -1,13 +1,3 @@
-//MASONARY
-$(function(){
-
-$('#container').masonry({
-  itemSelector: '.graphbox'
-});
-
-});
-
-
 d3.json("/api/shares", function(error, json) {
 	if (error) return console.warn(error);
 	data = json;
@@ -23,10 +13,10 @@ d3.json("/api/shares", function(error, json) {
 	var mediaType = recent.mediatype;
 	var lastURL = recent.url; // get current url
 
-	$('.total').html('total shares: ' + data.length);
-	$('.shareType').html('share type: '+ shareType);
-	$('.mediaType').html('share mediaType: ' +  mediaType )
-	$('.time').html('time since last share: '+ shareMoment);
+	$('.total').html('Total Shares: ' + data.length);
+	$('.shareType').html('Type: '+ shareType); // This should be changed to reflect if it was a drop or a link
+	$('.mediaType').html('Media Type: ' +  mediaType )
+	$('.time').html('Last Share Was: '+ shareMoment);
 
 
 	for (var i = data.length - 1; i >= 0; i--) {
@@ -90,6 +80,44 @@ nv.addGraph(function() {
 
 //Share Frequency
 // http://nvd3.org/examples/cumulativeLine.html
+nv.addGraph(function() {
+  var chart = nv.models.lineChart()
+                .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                .transitionDuration(350)  //how fast do you want the lines to transition?
+                .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                .showYAxis(true)        //Show the y-axis
+                .showXAxis(true)        //Show the x-axis
+  ;
+
+  chart.xAxis     //Chart x-axis settings
+      .axisLabel('Time')
+      .tickFormat(d3.format(',r'));
+
+  chart.yAxis     //Chart y-axis settings
+      .axisLabel('# of Shares')
+      .tickFormat(d3.format('.02f'));
+
+  /* Done setting the chart up? Time to render it!*/
+  var myData = sinAndCos();   //You need data...
+
+  d3.select('#sharesTime svg')    //Select the <svg> element you want to render the chart in.   
+      .datum(myData)         //Populate the <svg> element with chart data...
+      .call(chart);          //Finally, render the chart!
+
+  //Update the chart when window resizes.
+  nv.utils.windowResize(function() { chart.update() });
+  return chart;
+});
+
+//Add Masonary last so no overlaps happen
+$('#container').masonry({
+  itemSelector: '.graphbox'
+});
+
+
+
+////++++++++++++++TEST DATA++++++++++++++++++
 
 
 function exampleDataDL() {
@@ -165,6 +193,28 @@ function exampleDataUA() {
 
 
 })
+
+function sinAndCos() {
+  var sin = []
+
+  //Data is represented as an array of {x,y} pairs.
+  for (var i = 0; i < 100; i++) {
+    sin.push({x: i, y: Math.sin(i/10)});
+  }
+
+  //Line chart data should be sent as an array of series objects.
+  return [
+    {
+      values: sin,      //values - represents the array of {x,y} data points
+      key: 'Sine Wave', //key  - the name of the series.
+      color: '#ff7f0e'  //color - optional: choose your own line color.
+    }
+  ];
+}
+
+
+
+
 
 
 
