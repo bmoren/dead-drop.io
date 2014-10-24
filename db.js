@@ -20,6 +20,7 @@ var DB = function(dbname){
 DB.prototype.saveShare = function(req, data){
   var self = this;
   var created = new Date()
+  var user_ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   var share = {
     url: '',
     type: '',       // image, url, text
@@ -27,7 +28,7 @@ DB.prototype.saveShare = function(req, data){
     mimetype: '',
     dropped: false, // if true the user drag/drop'd an item, if false they pasted a url
     user_agent: req.headers['user-agent'],
-    ip: req.connection.remoteAddress || 0,
+    ip: user_ip,
     created: created.getTime(),
     date_obj: {
       year: created.getFullYear(),
