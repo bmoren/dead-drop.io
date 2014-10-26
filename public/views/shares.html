@@ -8,7 +8,7 @@
 	<script src="/js/plugins/nv.d3.min.js"></script>
 	<script src="/js/plugins/moment.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="/js/plugins/jquery.masonry.min.js"></script>
+	<!-- // <script src="/js/plugins/jquery.masonry.min.js"></script> -->
 	<script src="/js/shhh.js"></script>
 
 
@@ -18,42 +18,71 @@
 
 <div id="container">
 
-	<div id="shhh" class="graphbox center">
-		<h1><em>Shhh...</em></h1>
+
+
+	<div class="stats-container">		
+		<div id="shhh" class="graphbox center">
+			<h1><em>Shhh...</em></h1>
+		</div>
+
+		<div class="graphbox center">
+			<em>Total Shares</em>
+			<h3 class="total">0</h3>
+		</div>
+
+		<div id="text" class="graphbox">
+			<em>Current Share</em>
+			<p class="shareType"></p>
+			<p class="mediaType"></p>
+			<p class="time"></p>
+		</div>
+		<div style="clear:both"></div>
+	</div>
+	
+
+
+	<div class="time-container">
+		<button id="refresh">Refresh</button>
+
+		<label for="time-select">Show stats for:</label>
+		<select name="time-select" id="time-select">
+		  <option value="0">All time</option>
+		  <option value="1">This month</option> 
+		  <option value="3">Last 3 months</option>
+		  <option value="6">Last 6 months</option>
+		  <option value="12">Last year</option>
+		</select>
+
+		<div style="clear:both"></div>
 	</div>
 
-	<div id="text" class="graphbox">
-		<em>Current Share</em>
-		<div class="total"></div>
-		<div class="shareType"></div>
-		<div class="mediaType"></div>
-		<div class="time"></div>
+
+
+	<div class="charts-container">
+		<div id="mediaTypesPie" class="graphbox">
+			<em>Media Types</em>
+			<svg></svg>
+		</div>
+
+		<div id="dropLinkBar" class="graphbox">
+			<em>Drops vs. Links</em>
+			<svg></svg>
+		</div>
+		
+		<div id="userAgentPie" class="graphbox">
+			<em>User Agents</em>
+			<svg></svg>
+		</div>
+
+		<div id="sharesTime" class="graphbox">
+			<em>Shares Over Time</em>
+			<svg></svg>
+		</div>
+		<div style="clear:both"></div>
 	</div>
 
-	<div id="mediaTypesPie" class="graphbox">
-		<em>Media Types</em>
-		<svg></svg>
-	</div>
-
-	<div id="userAgentPie" class="graphbox">
-		<em>User Agents</em>
-		<svg></svg>
-	</div>
-
-	<div id="dropLinkBar" class="graphbox">
-		<em>Drops vs. Links</em>
-		<svg></svg>
-	</div>
-
-	<div id="sharesTime" class="graphbox">
-		<em>Shares Over Time</em>
-		<svg></svg>
-	</div>
 
 </div>
-
-
-
 
 </body>
 </html>

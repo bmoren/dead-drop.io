@@ -63,9 +63,38 @@ DB.prototype.saveShare = function(req, data){
 }
 
 
-DB.prototype.getShares = function(cb){
-  this.db.share.find().toArray(cb)
+DB.prototype.getShares = function(time, cb){
+  time = Number(time)
+  var date = new Date().reset('day')
+  var params = {}
+
+  if (time != 0){
+    date.rewind({month: time})
+    params.created = { $gte: +date }
+  }
+
+  this.db.share.find(params).toArray(cb)
 }
+
+
+DB.prototype.getStats = function(cb){
+  // get most recent share
+  var result = {
+    shares: 0,
+    recent: null
+  }
+  var self = this;
+  // get count of all shares (all time)
+  this.db.share.count({}, function(err, count){
+    result.shares = count;
+    // get initial share (should be same as most recent share)
+    self.getInitialShare(function(err, recent){
+      result.recent = recent;
+      cb(err, result)
+    })
+  })
+}
+
 
 DB.prototype.getInitialShare = function(cb){
   var self = this;

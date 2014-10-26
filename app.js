@@ -249,12 +249,19 @@ app.post('/share', function(req, res) {
 });
 
 
-app.get('/api/shares', authAdmin, function(req, res){
-  DB.getShares(function(err, data){
+app.get('/api/shares/:timeframe', authAdmin, function(req, res){
+  var t = req.param('timeframe')
+  DB.getShares(t, function(err, data){
     if (err) console.log(err)
     return res.json(data)
   })
+})
 
+app.get('/api/stats', authAdmin, function(req, res){
+  DB.getStats(function(err, data){
+    if (err) console.log(err)
+    return res.json(data)
+  })
 })
 
 app.get('/shhh', authAdmin, function(req,res){

@@ -1,29 +1,132 @@
-d3.json("/api/shares", function(error, json) {
-	if (error) return console.warn(error);
-	data = json;
+//
+// On page load, create a new Shhh object and initialize it
+//
+$(function(){
 
-	console.log(data); // log it out!
+  var shhh = window.shhh = new Shhh();
+  shhh.init()
 
-	//get the most recent share for use below
-	var recent = data[data.length-1]
-
-	//set them into variables
-	var shareMoment = moment(recent.created).fromNow();
-	var shareType = recent.type;
-	var mediaType = recent.mediatype;
-	var lastURL = recent.url; // get current url
-
-	$('.total').html('Total Shares: ' + data.length);
-	$('.shareType').html('Type: '+ shareType); // This should be changed to reflect if it was a drop or a link
-	$('.mediaType').html('Media Type: ' +  mediaType )
-	$('.time').html('Last Share Was: '+ shareMoment);
+})
 
 
-	for (var i = data.length - 1; i >= 0; i--) {
-		data[i]
-		
-	};
 
+//
+// Shhh object, n stuff
+//
+var Shhh = function(){
+  this.data = {};
+  this.timeframe = 1;
+  this.timeFrameMsg = [
+    'All Time', 'Last Month', 'Last 3 Months', 
+    'Last 6 months', 'Last Year'
+  ];
+}
+
+
+Shhh.prototype.init = function(){
+  var self = this;
+  this.setTimeframe()     // defaults to 1 (last month)
+  this.displayMainStats() // displays the top section of stats
+  this.displayCharts()    // displays the time range'd charts n stuff
+
+  $('#time-select').on('change', function(){
+    self.setTimeframe( $(this).val() )
+    self.displayCharts()
+  })
+}
+
+
+Shhh.prototype.displayMainStats = function(){
+  this.getStats(function(err, stats){
+    if (err || !stats) return console.log(err)
+
+    console.log('displaying main stats...')
+    console.log( stats )
+
+    var recent = stats.recent;
+    //set them into variables
+    var shareMoment = moment(recent.created).fromNow();
+    var shareType = recent.type;
+    var mediaType = recent.mediatype;
+    var lastURL = recent.url; // get current url
+
+    $('.total').html(stats.shares)
+    $('.shareType').html('Type: '+ shareType)
+    $('.mediaType').html('Media Type: ' +  mediaType )
+    $('.time').html('Last Share Was: '+ shareMoment)
+
+  })
+}
+
+
+Shhh.prototype.displayCharts = function(){
+
+  // this.getData(function(err, data){})
+  this.placeholders()
+
+}
+
+//
+// Helper methods
+//
+Shhh.prototype.helpers = {};
+
+//
+// returns the value of key from the current url query params
+//
+Shhh.prototype.helpers.qs = function(key){
+  var x = (window.location.search.substring(1)).split('&')
+  for (var i=0; i<x.length; i++) {
+    var kv = x[i].split('=')
+    if(kv[0] == key) return kv[1]
+  }
+  return undefined
+}
+
+//
+// Set the timeframe for reports, eg: 3 (last 3 months)
+// 
+Shhh.prototype.setTimeframe = function(time){
+  var t = (time) ? time : (this.helpers.qs('t') || 1)
+  this.timeframe = t;
+
+  if (time){
+    history.pushState(null, null, '?t='+ time)
+  }
+
+  $('#time-select option[value="'+ t +'"]').attr('selected', 'selected')
+
+  return t;
+}
+
+
+Shhh.prototype.getData = function(refresh, cb){
+  if (!cb){
+    cb = refresh || function(){}
+    refresh = false
+  }
+  var t = this.timeframe;
+  // try and get cached data first...
+  var data = this.data['data-'+ t]
+  if (data && !refresh) return cb(null, data)
+
+  var self = this;
+  d3.json("/api/shares/"+ t, function(error, data) {
+    if (error) return console.warn(error);
+    self.data['data-'+ t] = data;
+    cb(error, data)
+  })
+
+}
+
+
+Shhh.prototype.getStats = function(cb){
+  d3.json('/api/stats', cb);
+}
+
+
+
+Shhh.prototype.placeholders = function(){
 
 //Media Types Graph
 nv.addGraph(function() {
@@ -110,10 +213,9 @@ nv.addGraph(function() {
   return chart;
 });
 
-//Add Masonary last so no overlaps happen
-$('#container').masonry({
-  itemSelector: '.graphbox'
-});
+}
+
+
 
 
 
@@ -121,49 +223,40 @@ $('#container').masonry({
 
 
 function exampleDataDL() {
- return  [ 
-    {
-      key: "Drops Vs Links",
-      values: [
-        { 
-          "label" : "Drops" ,
-          "value" : 192
-        } , 
-        { 
-          "label" : "Links" , 
-          "value" : 309
-        } 
-      ]
-    }
-  ]
-
+ return  [{
+    key: "Drops Vs Links",
+    values: [{ 
+      "label" : "Drops" ,
+      "value" : 192
+    } , 
+    { 
+      "label" : "Links" , 
+      "value" : 309
+    }]
+  }]
 }
 
-
-
 function exampleDataMT() {
-  return  [
-      { 
-        "label": "Youtube",
-        "value" : 29.765957771107
-      } , 
-      { 
-        "label": "Vimeo",
-        "value" : 10
-      } , 
-      { 
-        "label": "SoundCloud",
-        "value" : 32.807804682612
-      } , 
-      { 
-        "label": "Text",
-        "value" : 5.45946739256
-      } , 
-      { 
-        "label": "Image",
-        "value" : 100.19434030906893
-      } 
-    ];
+  return  [{ 
+      "label": "Youtube",
+      "value" : 29.765957771107
+    } , 
+    { 
+      "label": "Vimeo",
+      "value" : 10
+    } , 
+    { 
+      "label": "SoundCloud",
+      "value" : 32.807804682612
+    } , 
+    { 
+      "label": "Text",
+      "value" : 5.45946739256
+    } , 
+    { 
+      "label": "Image",
+      "value" : 100.19434030906893
+    }]
 }
 
 function exampleDataUA() {
@@ -191,9 +284,6 @@ function exampleDataUA() {
     ];
 }
 
-
-})
-
 function sinAndCos() {
   var sin = []
 
@@ -211,16 +301,6 @@ function sinAndCos() {
     }
   ];
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

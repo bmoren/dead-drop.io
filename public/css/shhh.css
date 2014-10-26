@@ -1,10 +1,23 @@
-body{font-family: "helvetica", sans-serif;}
+html { padding:0; margin:0; }
+body{
+  font-family: "Helvetica-Neue", "helvetica", sans-serif;
+  padding:10px 0; 
+  margin:0;
+  background:#fff;
+}
+
 a{color: white;text-decoration: none;}
 a:hover{color:magenta;text-decoration: underline;}
 h1{text-decoration: underline;}
 em{text-decoration: underline;}
 .center{text-align: center;}
 
+#container {
+  padding:0;
+  margin:0 auto;
+  width:1300px;
+  /*background:#fff;*/
+}
 
 /*GRAPHS!*/
 .graphbox{
@@ -19,9 +32,55 @@ em{text-decoration: underline;}
 	float: left;
 }
 
-#mediaTypesPie svg {height: 400px;}
-#userAgentPie svg {height: 400px;}
-#dropLinkBar svg {height: 400px;}
-#sharesTime svg {height: 400px;}
+.total {
+  font-size:48px;
+  font-weight:bold;
+  color:#777;
+  margin:0;
+  padding:0;
+}
+
+.stats-container .graphbox {
+  height:80px;
+}
+.stats-container .graphbox p {
+  margin:3px;
+  padding:0;
+}
+
+.charts-container .graphbox em {
+  display:block;
+  margin:-10px -10px 5px -10px;
+  padding:6px;
+  background:#eee;
+  text-decoration:none;
+  font-style: normal;
+}
+
+.stats-container, .charts-container, .time-container {
+  display:block;
+  clear:both;
+}
+
+.time-container {
+  padding:10px 20px;
+  margin:5px;
+  margin-right:8px;
+  background:#ddd;
+}
+
+#refresh {
+  float:right;
+}
+
+#mediaTypesPie svg {height: 380px;}
+#userAgentPie svg {height: 380px;}
+#dropLinkBar svg {height: 380px;}
+#sharesTime svg {
+  height: 350px;
+}
+#sharesTime {
+  width:97.3%;
+}
 
 
