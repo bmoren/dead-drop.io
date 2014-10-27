@@ -19,7 +19,9 @@ var Shhh = function(){
   this.timeframe = 1; // current timeframe, (number of months worth of data from today)
 }
 
-
+//
+// Initialize the charts and things
+//
 Shhh.prototype.init = function(){
   var self = this;
   this.setTimeframe()     // defaults to 1 (last month)
@@ -38,7 +40,9 @@ Shhh.prototype.init = function(){
   })
 }
 
-
+//
+// Diaplays the top stats (total shares, current share)
+//
 Shhh.prototype.displayMainStats = function(){
   this.getStats(function(err, stats){
     if (err || !stats) return console.log(err)
@@ -58,13 +62,17 @@ Shhh.prototype.displayMainStats = function(){
   })
 }
 
-
+//
+// Displays the rest of the chart data based on the current timeframe
+//
 Shhh.prototype.displayCharts = function(){
   var self = this
   this.getData(function(err, data){
     self.showCharts()
+    $('.totaltf').text(data.orig_data.length)
   })
 }
+
 
 Shhh.prototype.showCharts = function(){
   var self = this;
@@ -160,7 +168,6 @@ Shhh.prototype.showCharts = function(){
 
 
 
-
 //
 // Set the timeframe for reports, eg: 3 (last 3 months)
 // 
@@ -171,8 +178,12 @@ Shhh.prototype.setTimeframe = function(time){
   if (time){
     history.pushState(null, null, '?t='+ time)
   }
-
+  $('#time-select option').attr('selected', false)
   $('#time-select option[value="'+ t +'"]').attr('selected', 'selected')
+
+  // update UI
+  var text = $('#time-select option[selected="selected"]').text()
+  $('.timeframe').text( text )
 
   return t;
 }
@@ -247,7 +258,8 @@ Shhh.prototype.processData = function(data){
         { label : "Links" , value : 0 }
       ]
     }],
-    num_shares: sinAndCos
+    num_shares: sinAndCos,
+    orig_data: data
   };
 
   data.forEach(function(share, i){

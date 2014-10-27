@@ -32,7 +32,7 @@ em{text-decoration: underline;}
 	float: left;
 }
 
-.total {
+.total, .totaltf {
   font-size:48px;
   font-weight:bold;
   color:#777;
@@ -40,8 +40,11 @@ em{text-decoration: underline;}
   padding:0;
 }
 
+.totaltf { color: #444; }
+
 .stats-container .graphbox {
   height:80px;
+  width:292px;
 }
 .stats-container .graphbox p {
   margin:3px;
