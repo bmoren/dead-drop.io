@@ -5,6 +5,7 @@ require('sugar')
 var mongo = require('mongoskin')
 var request = require('request')
 var async = require('async')
+var useragent = require('useragent')
 
 var DB = function(dbname){
   this.db = mongo.db("mongodb://localhost:27017/"+ dbname, {native_parser:true});
@@ -27,7 +28,7 @@ DB.prototype.saveShare = function(req, data){
     mediatype: '',  // image, text, vimeo, youtube, soundcloud
     mimetype: '',
     dropped: false, // if true the user drag/drop'd an item, if false they pasted a url
-    user_agent: req.headers['user-agent'],
+    user_agent: useragent.lookup(req.headers['user-agent']),
     ip: user_ip,
     created: created.getTime(),
     date_obj: {
@@ -64,6 +65,10 @@ DB.prototype.saveShare = function(req, data){
 
 
 DB.prototype.getShares = function(time, cb){
+  if (typeof time == 'function'){
+    cb = time
+    time = 0
+  }
   time = Number(time)
   var date = new Date().reset('day')
   var params = {}
@@ -109,31 +114,66 @@ DB.prototype.getInitialShare = function(cb){
 
 var migrations = {}
 
-migrations.data_obj = function(share){
+migrations.date_obj = function(share){
+  if (typeof share.date_obj != 'undefined') return share;
   var created = new Date(share.created)
   var data = {
     year: created.getFullYear(),
     month: created.getMonth()+1,
     day: created.getDate()
   }
-  share.data_obj = data;
+  share.date_obj = data;
   return share;
 }
+
+migrations.update_ua = function(share){
+  var ua = share.user_agent
+  if (typeof ua == 'string'){
+    share.user_agent = useragent.lookup( ua )
+  }
+  return share;
+}
+
+migrations.remove_data_obj = function(share){
+  if (typeof share.data_obj == 'undefined') return false
+  delete share.data_obj
+  return {"data_obj": ""}
+}
+
 
 DB.prototype.migrations = function(cb){
   var self = this;
   var fns = []
   this.getShares(function(err, shares){
+    var count = 0;
+    console.log('processing', shares.length, 'document(s)')
     shares.forEach(function(share){
       fns.push(function(done){
-        console.log( '> processing share:', share._id )
-        share = migrations.data_obj(share)
+        console.log('> processing share:', share._id )
+        // 1. add new `date_obj` property
+        share = migrations.date_obj(share)
+
+        // 2. updated the user agent data
+        share = migrations.update_ua(share)
+
+        // 3. remove "data_obj" returns an unset object
+        var unset = migrations.remove_data_obj(share)
+
         var id = share._id
         delete share._id
-        self.db.share.update({_id: id}, {$set: share}, done)
+
+        var options = { "$set": share }
+        if (unset) options['$unset'] = unset
+
+        count++;
+
+        self.db.share.update({_id: id}, options, done)
       })
     })
-    async.parallel(fns, cb)
+    async.parallel(fns, function(err, results){
+      console.log('processed', count, 'documents of', shares.length)
+      cb(err, results)
+    })
   })
 }
 

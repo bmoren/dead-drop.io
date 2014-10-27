@@ -8,6 +8,7 @@ var express = require('express'),
   db = require('./db'),
   sockjs = require('sockjs'),
   async = require('async'),
+  useragent = require('useragent'),
   auth = require('basic-auth'),
 	app = express(),
   messages = [],
@@ -265,6 +266,7 @@ app.get('/api/stats', authAdmin, function(req, res){
 })
 
 app.get('/shhh', authAdmin, function(req,res){
+
   res.render('shares.html');
 })
 

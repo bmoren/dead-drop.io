@@ -11,7 +11,8 @@
     "mustache": "~0.8.0",
     "request": "^2.36.0",
     "sockjs": "~0.3.8",
-    "sugar": "~1.4.1"
+    "sugar": "~1.4.1",
+    "useragent": "^2.1.0"
   },
   "devDependencies": {
     "basic-auth": "^1.0.0"

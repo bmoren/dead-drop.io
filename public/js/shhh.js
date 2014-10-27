@@ -11,15 +11,12 @@ $(function(){
 
 
 //
-// Shhh object, n stuff
+// Shhh object
 //
 var Shhh = function(){
-  this.data = {};
-  this.timeframe = 1;
-  this.timeFrameMsg = [
-    'All Time', 'Last Month', 'Last 3 Months', 
-    'Last 6 months', 'Last Year'
-  ];
+  this.data = null; // the current timeframe data
+  this.cacheData = {}; // cached timeframe data
+  this.timeframe = 1; // current timeframe, (number of months worth of data from today)
 }
 
 
@@ -33,15 +30,18 @@ Shhh.prototype.init = function(){
     self.setTimeframe( $(this).val() )
     self.displayCharts()
   })
+
+  $('#refresh').on('click', function(){
+    self.cacheData = {}
+    self.displayMainStats() // displays the top section of stats
+    self.displayCharts()    // displays the time range'd charts n stuff
+  })
 }
 
 
 Shhh.prototype.displayMainStats = function(){
   this.getStats(function(err, stats){
     if (err || !stats) return console.log(err)
-
-    console.log('displaying main stats...')
-    console.log( stats )
 
     var recent = stats.recent;
     //set them into variables
@@ -60,28 +60,106 @@ Shhh.prototype.displayMainStats = function(){
 
 
 Shhh.prototype.displayCharts = function(){
-
-  // this.getData(function(err, data){})
-  this.placeholders()
-
+  var self = this
+  this.getData(function(err, data){
+    self.showCharts()
+  })
 }
 
-//
-// Helper methods
-//
-Shhh.prototype.helpers = {};
+Shhh.prototype.showCharts = function(){
+  var self = this;
 
-//
-// returns the value of key from the current url query params
-//
-Shhh.prototype.helpers.qs = function(key){
-  var x = (window.location.search.substring(1)).split('&')
-  for (var i=0; i<x.length; i++) {
-    var kv = x[i].split('=')
-    if(kv[0] == key) return kv[1]
-  }
-  return undefined
+  //Media Types Graph
+  nv.addGraph(function() {
+    var chart = nv.models.pieChart()
+        .x(function(d) { return d.label })
+        .y(function(d) { return d.value })
+        .showLabels(true)
+        .valueFormat( d3.format(',.0f') )
+
+    d3.select("#mediaTypesPie svg")
+        .datum(self._mediaTypeData())
+        .transition().duration(350)
+        .call(chart);
+
+    return chart;
+  })
+
+  //User Agents Graph
+  nv.addGraph(function() {
+    var chart = nv.models.pieChart()
+        .x(function(d) { return d.label })
+        .y(function(d) { return d.value })
+        .showLabels(true)
+        .valueFormat( d3.format(',.0f') )
+
+    d3.select("#userAgentPie svg")
+        .datum(self._userAgentsData())
+        .transition().duration(350)
+        .call(chart);
+
+    return chart;
+  });
+
+
+  //Drops vs Links
+  nv.addGraph(function() {
+
+    var chart = nv.models.discreteBarChart()
+        .x(function(d) { return d.label })    //Specify the data accessors.
+        .y(function(d) { return d.value })
+        .tooltips(false)        //Don't show tooltips
+        .showValues(true)       //...instead, show the bar value right on top of each bar.
+        .transitionDuration(350)   
+        .valueFormat( d3.format(',.0f') )
+
+    chart.yAxis
+      .tickFormat( d3.format(',.0f') )
+
+    d3.select('#dropLinkBar svg')
+        .datum(self._dropLinksData())
+        .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  //Share Frequency
+  // http://nvd3.org/examples/cumulativeLine.html
+  nv.addGraph(function() {
+    var chart = nv.models.lineChart()
+                  .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                  .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                  .transitionDuration(350)  //how fast do you want the lines to transition?
+                  .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                  .showYAxis(true)        //Show the y-axis
+                  .showXAxis(true)        //Show the x-axis
+    ;
+
+    chart.xAxis     //Chart x-axis settings
+        .axisLabel('Time')
+        .tickFormat(d3.format(',r'));
+
+    chart.yAxis     //Chart y-axis settings
+        .axisLabel('# of Shares')
+        .tickFormat(d3.format('.02f'));
+
+    /* Done setting the chart up? Time to render it!*/
+    var myData = sinAndCos();   //You need data...
+
+    d3.select('#sharesTime svg')    //Select the <svg> element you want to render the chart in.   
+        .datum(self._numSharesData())         //Populate the <svg> element with chart data...
+        .call(chart);          //Finally, render the chart!
+
+    //Update the chart when window resizes.
+    nv.utils.windowResize(function() { chart.update() });
+    return chart;
+  });
 }
+
+
+
 
 //
 // Set the timeframe for reports, eg: 3 (last 3 months)
@@ -107,14 +185,19 @@ Shhh.prototype.getData = function(refresh, cb){
   }
   var t = this.timeframe;
   // try and get cached data first...
-  var data = this.data['data-'+ t]
-  if (data && !refresh) return cb(null, data)
-
-  var self = this;
+  var cache = this.cacheData['data-'+ t]
+  if (cache && !refresh) {
+    this.data = cache
+    return cb(null, cache)
+  }
+  // otherwise, get the data from the server and cache it!
+  var self = this;  
   d3.json("/api/shares/"+ t, function(error, data) {
     if (error) return console.warn(error);
-    self.data['data-'+ t] = data;
-    cb(error, data)
+    var processedData = self.processData( data );
+    self.cacheData['data-'+ t] = processedData
+    self.data = processedData;
+    cb(error, processedData)
   })
 
 }
@@ -125,164 +208,101 @@ Shhh.prototype.getStats = function(cb){
 }
 
 
+//
+// Helper methods
+//
+Shhh.prototype.helpers = {};
 
-Shhh.prototype.placeholders = function(){
-
-//Media Types Graph
-nv.addGraph(function() {
-  var chart = nv.models.pieChart()
-      .x(function(d) { return d.label })
-      .y(function(d) { return d.value })
-      .showLabels(true);
-
-
-    d3.select("#mediaTypesPie svg")
-        .datum(exampleDataMT())
-        .transition().duration(350)
-        .call(chart);
-
-  return chart;
-});
-
-//User Agents Graph
-nv.addGraph(function() {
-  var chart = nv.models.pieChart()
-      .x(function(d) { return d.label })
-      .y(function(d) { return d.value })
-      .showLabels(true);
-      
-
-    d3.select("#userAgentPie svg")
-        .datum(exampleDataUA())
-        .transition().duration(350)
-        .call(chart);
-
-  return chart;
-});
+//
+// returns the value of key from the current url query params
+//
+Shhh.prototype.helpers.qs = function(key){
+  var x = (window.location.search.substring(1)).split('&')
+  for (var i=0; i<x.length; i++) {
+    var kv = x[i].split('=')
+    if(kv[0] == key) return kv[1]
+  }
+  return undefined
+}
 
 
-//Drops vs Links
-nv.addGraph(function() {
-  var chart = nv.models.discreteBarChart()
-      .x(function(d) { return d.label })    //Specify the data accessors.
-      .y(function(d) { return d.value })
-      .staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
-      .tooltips(false)        //Don't show tooltips
-      .showValues(true)       //...instead, show the bar value right on top of each bar.
-      .transitionDuration(350)
-      ;
+//
+// Chart Data methods
+//
 
-  d3.select('#dropLinkBar svg')
-      .datum(exampleDataDL())
-      .call(chart);
+Shhh.prototype.processData = function(data){
+  var results = {
+    user_agents: [], // generated from data
+    media_types: [
+      { label: "Youtube",     value : 0 },
+      { label: "Vimeo",       value : 0 },
+      { label: "SoundCloud",  value : 0 },
+      { label: "Text",        value : 0 },
+      { label: "Image",       value : 0 }
+    ],
+    drop_vs_links: [{
+      key: "Drops Vs Links",
+      values: [
+        { label : "Drops" , value : 0 },
+        { label : "Links" , value : 0 }
+      ]
+    }],
+    num_shares: sinAndCos
+  };
 
-  nv.utils.windowResize(chart.update);
+  data.forEach(function(share, i){
+    // update values for drop vs link
+    if (share.dropped == true) {
+      results.drop_vs_links[0].values[0].value++
+    } else {
+      results.drop_vs_links[0].values[1].value++
+    }
 
-  return chart;
-});
+    // update values for media types
+    if (share.mediatype == 'youtube')     results.media_types[0].value++
+    if (share.mediatype == 'vimeo')       results.media_types[1].value++
+    if (share.mediatype == 'soundcloud')  results.media_types[2].value++
+    if (share.mediatype == 'text')        results.media_types[3].value++
+    if (share.mediatype == 'image')       results.media_types[4].value++
+    
+    // update values for user agent
+    var browser = share.user_agent.family
+    var newBrowser = true
+    for(var i=0; i<results.user_agents.length; i++){
+      if (results.user_agents[i].label == browser){
+        newBrowser = false;
+        results.user_agents[i].value++
+      }
+    }
+    if (newBrowser){
+      results.user_agents.push({ label: browser, value: 1 })
+    }
 
-//Share Frequency
-// http://nvd3.org/examples/cumulativeLine.html
-nv.addGraph(function() {
-  var chart = nv.models.lineChart()
-                .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
-                .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
-                .transitionDuration(350)  //how fast do you want the lines to transition?
-                .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
-                .showYAxis(true)        //Show the y-axis
-                .showXAxis(true)        //Show the x-axis
-  ;
 
-  chart.xAxis     //Chart x-axis settings
-      .axisLabel('Time')
-      .tickFormat(d3.format(',r'));
+  })
 
-  chart.yAxis     //Chart y-axis settings
-      .axisLabel('# of Shares')
-      .tickFormat(d3.format('.02f'));
+  return results
+}
 
-  /* Done setting the chart up? Time to render it!*/
-  var myData = sinAndCos();   //You need data...
 
-  d3.select('#sharesTime svg')    //Select the <svg> element you want to render the chart in.   
-      .datum(myData)         //Populate the <svg> element with chart data...
-      .call(chart);          //Finally, render the chart!
+Shhh.prototype._mediaTypeData = function(){
+  return this.data.media_types;
+}
 
-  //Update the chart when window resizes.
-  nv.utils.windowResize(function() { chart.update() });
-  return chart;
-});
+Shhh.prototype._userAgentsData = function(){
+  return this.data.user_agents;
+}
 
+Shhh.prototype._dropLinksData = function(){
+  return this.data.drop_vs_links
+}
+
+Shhh.prototype._numSharesData = function(){
+  return this.data.num_shares;
 }
 
 
 
-
-
-////++++++++++++++TEST DATA++++++++++++++++++
-
-
-function exampleDataDL() {
- return  [{
-    key: "Drops Vs Links",
-    values: [{ 
-      "label" : "Drops" ,
-      "value" : 192
-    } , 
-    { 
-      "label" : "Links" , 
-      "value" : 309
-    }]
-  }]
-}
-
-function exampleDataMT() {
-  return  [{ 
-      "label": "Youtube",
-      "value" : 29.765957771107
-    } , 
-    { 
-      "label": "Vimeo",
-      "value" : 10
-    } , 
-    { 
-      "label": "SoundCloud",
-      "value" : 32.807804682612
-    } , 
-    { 
-      "label": "Text",
-      "value" : 5.45946739256
-    } , 
-    { 
-      "label": "Image",
-      "value" : 100.19434030906893
-    }]
-}
-
-function exampleDataUA() {
-  return  [
-      { 
-        "label": "Firefox",
-        "value" : 29.765957771107
-      } , 
-      { 
-        "label": "Safari",
-        "value" : 10
-      } , 
-      { 
-        "label": "Chrome",
-        "value" : 32.807804682612
-      } , 
-      { 
-        "label": "Opera",
-        "value" : 5.45946739256
-      } , 
-      { 
-        "label": "Other",
-        "value" : 100.19434030906893
-      } 
-    ];
-}
 
 function sinAndCos() {
   var sin = []
@@ -301,6 +321,3 @@ function sinAndCos() {
     }
   ];
 }
-
-
-
