@@ -76,11 +76,11 @@ em{text-decoration: underline;}
   float:right;
 }
 
-#mediaTypesPie svg {height: 380px;}
-#userAgentPie svg {height: 380px;}
-#dropLinkBar svg {height: 380px;}
+#mediaTypesPie svg {height: 340px;}
+#userAgentPie svg {height: 340px;}
+#dropLinkBar svg {height: 340px;}
 #sharesTime svg {
-  height: 350px;
+  height: 270px;
 }
 #sharesTime {
   width:97.3%;

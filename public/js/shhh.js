@@ -136,25 +136,44 @@ Shhh.prototype.showCharts = function(){
   //Share Frequency
   // http://nvd3.org/examples/cumulativeLine.html
   nv.addGraph(function() {
+    // var chart = nv.models.lineChart()
+    //     .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+    //     .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+    //     .transitionDuration(350)  //how fast do you want the lines to transition?
+    //     .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+    //     .showYAxis(true)        //Show the y-axis
+    //     .showXAxis(true)        //Show the x-axis
+    
+
+    // chart.xAxis     //Chart x-axis settings
+    //     .axisLabel('Date')
+    //     // .tickFormat(d3.format(',r'));
+
+    // chart.yAxis     //Chart y-axis settings
+    //     .axisLabel('# of Shares')
+    //     // .tickFormat(d3.format('.02f'));
+
     var chart = nv.models.lineChart()
-                  .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
-                  .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
-                  .transitionDuration(350)  //how fast do you want the lines to transition?
-                  .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
-                  .showYAxis(true)        //Show the y-axis
-                  .showXAxis(true)        //Show the x-axis
-    ;
+      .margin({left:100, right:60, bottom:60, top:40})
+      .useInteractiveGuideline(true)
+      .transitionDuration(350)
+      .showLegend(false)
+      .showYAxis(true)
+      .showXAxis(true)
+      .x(function(d) { return d[0] })
+      .y(function(d) { return d[1] })
 
-    chart.xAxis     //Chart x-axis settings
-        .axisLabel('Time')
-        .tickFormat(d3.format(',r'));
+    chart.xAxis
+      .axisLabel('Date')
+      .tickFormat(function(d, x, y , z){
+        return d3.time.format('%x')(new Date(d))
+      })
 
-    chart.yAxis     //Chart y-axis settings
-        .axisLabel('# of Shares')
-        .tickFormat(d3.format('.02f'));
-
-    /* Done setting the chart up? Time to render it!*/
-    var myData = sinAndCos();   //You need data...
+    chart.yAxis
+      .axisLabel('# Shares')
+      .tickFormat(function(d){
+        return d
+      })
 
     d3.select('#sharesTime svg')    //Select the <svg> element you want to render the chart in.   
         .datum(self._numSharesData())         //Populate the <svg> element with chart data...
@@ -258,9 +277,14 @@ Shhh.prototype.processData = function(data){
         { label : "Links" , value : 0 }
       ]
     }],
-    num_shares: sinAndCos,
+    num_shares: {
+      values: [],
+      key: 'Shares'
+    },
     orig_data: data
   };
+
+  var _tmp = {};
 
   data.forEach(function(share, i){
     // update values for drop vs link
@@ -290,7 +314,25 @@ Shhh.prototype.processData = function(data){
       results.user_agents.push({ label: browser, value: 1 })
     }
 
+    // create a new key of month-day-year
+    var _d = share.date_obj
+    var _k = _d.month+'-'+_d.day+'-'+_d.year;
+    // if the key doesn't exist yet, create it
+    if (typeof _tmp[_k] == 'undefined') {
+      _tmp[_k] = 0;
+    }
+    // increment that key value
+    _tmp[_k]++;
 
+  })
+  
+  // form the data into the format D3 wants
+  for(var key in _tmp){
+    results.num_shares.values.push([ new Date(key), _tmp[key] ])
+  }
+  // sort the data by timestamp
+  results.num_shares.values.sort(function compareTimestamp(a,b){
+    return a[0] - b[0]
   })
 
   return results
@@ -306,30 +348,11 @@ Shhh.prototype._userAgentsData = function(){
 }
 
 Shhh.prototype._dropLinksData = function(){
-  return this.data.drop_vs_links
+  return this.data.drop_vs_links;
 }
 
 Shhh.prototype._numSharesData = function(){
-  return this.data.num_shares;
+  return [this.data.num_shares]; // needs to be an array
 }
 
 
-
-
-function sinAndCos() {
-  var sin = []
-
-  //Data is represented as an array of {x,y} pairs.
-  for (var i = 0; i < 100; i++) {
-    sin.push({x: i, y: Math.sin(i/10)});
-  }
-
-  //Line chart data should be sent as an array of series objects.
-  return [
-    {
-      values: sin,      //values - represents the array of {x,y} data points
-      key: 'Sine Wave', //key  - the name of the series.
-      color: '#ff7f0e'  //color - optional: choose your own line color.
-    }
-  ];
-}
