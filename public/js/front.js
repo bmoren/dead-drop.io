@@ -109,9 +109,7 @@ $(document).ready(function() {
       return false;
     }
 
-
     $.post(url, data, function(resp){
-
       //Error handling...
       if (resp.error){
         shake(); // shake on error!
@@ -226,7 +224,7 @@ $(document).ready(function() {
 
   function soundcloudOverlay(soundcloudURL) {
     soundcloud_parse(soundcloudURL, function(oEmbed) {
-      // console.log(oEmbed);
+      console.log(oEmbed);
       //iframe has class of center and soundcloud
       contentOpen('<div class="soundcloud center">' + oEmbed.html + '</div>');
 

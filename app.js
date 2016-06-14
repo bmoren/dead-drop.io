@@ -164,10 +164,12 @@ app.post('/share', function(req, res) {
   // User is trying to upload a url
   if (req.body.image){
     var _url = req.body.image;
+    var sc = (getMediaType(_url) == 'soundcloud') ? true : false;
+
     // perform head request here
     request.head(_url, function(err, resp, body){
       // check that the _url is accessible online
-      if (!resp || resp.statusCode > 299 || err){
+      if (!sc && (!resp || resp.statusCode > 299 || err)){
         return res.json({ error: "The URL you are trying to share is nonexistent, find something <i>real</i> to share." });
       }
 
